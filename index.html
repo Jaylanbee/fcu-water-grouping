@@ -1,0 +1,2936 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>逢甲大學 115-1 通識《水水臺灣》期末專題分組與路演抽籤系統 (多人即時協作版)</title>
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: #151d30;
+      --bg-card-hover: #1c263f;
+      --bg-surface: #1e293b;
+      --border-color: #334155;
+      --border-focus: #60a5fa;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fef3c7;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(180deg, #111827 0%, #0b0f19 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.85rem 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-section h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      letter-spacing: -0.025em;
+    }
+
+    .brand-section .badge {
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .cloud-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    .cloud-status-pill.syncing {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+    }
+
+    .cloud-status-pill.offline {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-surface);
+      padding: 0.4rem 0.8rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      font-size: 0.82rem;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .stat-num {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-num.gold { color: var(--accent-gold); }
+    .stat-num.green { color: var(--accent-green); }
+    .stat-num.cyan { color: var(--accent-cyan); }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.42rem 0.85rem;
+      border-radius: 0.375rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s ease-in-out;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-student-mobile {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+    }
+    .btn-student-mobile:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    .btn-gold:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+    }
+    .btn-purple:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-outline {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background: rgba(51, 65, 85, 0.8);
+      border-color: #64748b;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 0.22rem 0.5rem;
+      font-size: 0.74rem;
+    }
+
+    /* Main Tabs Navigation */
+    .tabs-nav {
+      max-width: 1600px;
+      margin: 0.75rem auto 0;
+      padding: 0 1.5rem;
+      width: 100%;
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      gap: 1rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.65rem 1.1rem;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      color: #60a5fa;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #3b82f6;
+      border-radius: 3px 3px 0 0;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+    }
+
+    .tab-pill {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: 600;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem 3rem;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* STAGE 1: GROUP FORMATION */
+    .stage1-layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .stage1-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Student Pool Sidebar */
+    .pool-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      position: sticky;
+      top: 5rem;
+      max-height: calc(100vh - 7rem);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .pool-header {
+      margin-bottom: 0.75rem;
+    }
+
+    .pool-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .search-box {
+      margin-top: 0.5rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.85rem;
+      color: #fff;
+      outline: none;
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .pool-filter {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .filter-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    /* TA Random Assignment Highlight Box */
+    .ta-random-box {
+      margin-top: 0.75rem;
+      padding: 0.6rem;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .ta-random-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #c4b5fd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quick-assign-bar {
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+    }
+
+    .quick-assign-controls {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .quick-assign-controls select {
+      flex: 1;
+      background: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-size: 0.78rem;
+      border-radius: 0.25rem;
+      padding: 0.25rem;
+    }
+
+    .student-list-scroll {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 0.75rem;
+      padding-right: 0.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .student-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .student-item:hover {
+      background: var(--bg-card-hover);
+      border-color: #64748b;
+    }
+
+    .student-item.selected {
+      background: rgba(59, 130, 246, 0.25);
+      border-color: var(--accent-blue);
+    }
+
+    .student-item.assigned {
+      opacity: 0.45;
+      background: rgba(15, 23, 42, 0.6);
+      text-decoration: line-through;
+    }
+
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .student-checkbox {
+      cursor: pointer;
+    }
+
+    .student-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+
+    .student-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .student-badge-assigned {
+      font-size: 0.68rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.2rem;
+      background: rgba(16, 185, 129, 0.2);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    /* Groups Grid (10 Groups Bento) */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 640px) {
+      .groups-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .group-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .group-card:hover {
+      border-color: #475569;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .group-card.drag-over {
+      border-color: var(--accent-blue);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .group-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.6rem;
+    }
+
+    .group-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .group-number-pill {
+      font-size: 0.85rem;
+      font-weight: 800;
+      background: #1e3a8a;
+      color: #bfdbfe;
+      border: 1px solid #3b82f6;
+      padding: 0.2rem 0.6rem;
+      border-radius: 0.375rem;
+      white-space: nowrap;
+    }
+
+    .group-name-input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .group-name-input:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+
+    .member-count-badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 0.375rem;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .member-count-badge.target-ok {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .member-count-badge.target-under {
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+    }
+
+    .member-count-badge.target-over {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .group-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .topic-input {
+      flex: 1;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      min-width: 180px;
+    }
+    .topic-input::placeholder {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    .mvp-selector {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.25rem;
+      padding: 0.25rem 0.4rem;
+      font-size: 0.78rem;
+      color: #fff;
+    }
+
+    .group-members-container {
+      min-height: 140px;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px dashed var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .member-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      padding: 0.35rem 0.55rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      transition: background 0.15s;
+    }
+
+    .member-card:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .member-card.is-leader {
+      border-color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .member-main-info {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex: 1;
+    }
+
+    .leader-crown-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      opacity: 0.3;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    .leader-crown-btn:hover {
+      opacity: 0.8;
+      transform: scale(1.15);
+    }
+    .leader-crown-btn.active {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.8));
+    }
+
+    .member-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    .member-id {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .member-role-input {
+      width: 120px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.2rem;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.35rem;
+      color: #f1f5f9;
+    }
+    .member-role-input:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+
+    .member-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .member-remove-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 0.1rem 0.25rem;
+      border-radius: 0.2rem;
+    }
+    .member-remove-btn:hover {
+      color: var(--accent-red);
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    .group-footer-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .empty-members-tip {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      text-align: center;
+      margin: auto 0;
+      padding: 1.5rem 0;
+    }
+
+    /* STAGE 2: ROADSHOW LOTTERY */
+    .lottery-hero {
+      background: radial-gradient(circle at 50% 20%, rgba(30, 58, 138, 0.35) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lottery-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 60%);
+      animation: rotateBg 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateBg {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .lottery-rules-banner {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .rule-tag {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .rule-tag.w15 {
+      border-color: rgba(6, 182, 212, 0.5);
+      background: rgba(6, 182, 212, 0.1);
+      color: #67e8f9;
+    }
+
+    .rule-tag.w16 {
+      border-color: rgba(245, 158, 11, 0.5);
+      background: rgba(245, 158, 11, 0.1);
+      color: #fde047;
+    }
+
+    .lottery-controls-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .btn-lottery-grand {
+      font-size: 1.25rem;
+      padding: 0.85rem 2.2rem;
+      border-radius: 0.6rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #4338ca 100%);
+      color: #fff;
+      font-weight: 800;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 20px rgba(37, 99, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-lottery-grand:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 30px rgba(37, 99, 235, 0.7);
+    }
+
+    .btn-lottery-grand:active {
+      transform: translateY(1px);
+    }
+
+    .sound-toggle-btn {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .sound-toggle-btn.active {
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+
+    /* Lottery Results Dual Column */
+    .results-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 900px) {
+      .results-comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .week-column {
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .week-column.col-w15 {
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.1);
+    }
+
+    .week-column.col-w16 {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.1);
+    }
+
+    .week-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid;
+    }
+
+    .col-w15 .week-header {
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+
+    .col-w16 .week-header {
+      border-color: rgba(245, 158, 11, 0.4);
+    }
+
+    .week-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .col-w15 .week-title { color: #67e8f9; }
+    .col-w16 .week-title { color: #fde047; }
+
+    .week-date-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .week-notice-box {
+      font-size: 0.8rem;
+      padding: 0.6rem 0.8rem;
+      border-radius: 0.375rem;
+      line-height: 1.4;
+    }
+
+    .col-w15 .week-notice-box {
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      color: #a5f3fc;
+    }
+
+    .col-w16 .week-notice-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: #fef08a;
+    }
+
+    .slot-cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .slot-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.6rem;
+      padding: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slot-card.revealed {
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .slot-order-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .col-w15 .slot-order-badge {
+      background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+    }
+
+    .col-w16 .slot-order-badge {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .slot-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .slot-top-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .slot-team-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #93c5fd;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.25rem;
+    }
+
+    .slot-team-name {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .slot-topic-row {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .slot-footer-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.15rem;
+    }
+
+    .slot-leader-tag {
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .slot-card.empty-placeholder {
+      opacity: 0.3;
+      border-style: dashed;
+      background: transparent;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .modal-close-btn:hover { color: #fff; }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-footer {
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      color: #fff;
+      font-size: 0.9rem;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .strategy-option-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .strategy-option-card:hover {
+      border-color: #60a5fa;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .selectable-student-row {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .selectable-student-row:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+      transform: translateX(2px);
+    }
+
+    .import-textarea {
+      width: 100%;
+      height: 180px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 0.375rem;
+      color: #fff;
+      font-family: monospace;
+      font-size: 0.85rem;
+      padding: 0.75rem;
+      resize: vertical;
+    }
+
+    .import-textarea:focus {
+      border-color: var(--border-focus);
+      outline: none;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+      }
+      header, .tabs-nav, .lottery-hero, .header-actions, .quick-assign-bar, .pool-card, .btn {
+        display: none !important;
+      }
+      .stage1-layout {
+        display: block !important;
+      }
+      .groups-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .group-card {
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+        page-break-inside: avoid;
+      }
+      .results-comparison {
+        display: block !important;
+      }
+      .week-column {
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: #000 !important;
+        margin-bottom: 2rem;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand-section">
+        <h1>
+          逢甲大學 115-1 通識核心《水水臺灣》
+          <span class="badge">期末專題決策艙</span>
+          <span class="cloud-status-pill" id="cloud-status-pill">
+            <span id="cloud-status-dot">🟢</span>
+            <span id="cloud-status-text">雲端資料庫已連線</span>
+          </span>
+        </h1>
+        <div class="brand-subtitle">
+          全班即時多人協作 (分散防衝突雲端同步) ➔ 各組下拉式/手機自主選隊 ➔ 助教一鍵隨機補齊 ➔ 10組路演抽籤
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item">
+          總名單：<span class="stat-num" id="stat-total">0</span> 人
+        </div>
+        <span style="color: var(--border-color)">|</span>
+        <div class="stat-item">
+          已入組：<span class="stat-num green" id="stat-assigned">0</span> 人
+        </div>
+        <span style="color: var(--border-color)">|</span>
+        <div class="stat-item">
+          待組隊：<span class="stat-num gold" id="stat-unassigned">0</span> 人
+        </div>
+        <span style="color: var(--border-color)">|</span>
+        <div class="stat-item">
+          已抽籤：<span class="stat-num cyan" id="stat-lottery">未抽籤</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Prominent Mobile Registration Button for Students -->
+        <button class="btn btn-student-mobile" onclick="openStudentSelfRegisterModal()">
+          📱 學生手機自選/抽籤加入
+        </button>
+        <button class="btn btn-primary" onclick="openImportModal()">
+          📥 批次匯入名冊
+        </button>
+        <button class="btn btn-purple" onclick="openTaRandomModal()">
+          🎲 剩餘未組隊名單隨機組隊
+        </button>
+        <button class="btn btn-outline" onclick="fetchFromCloud(true)">
+          🔄 重新同步雲端
+        </button>
+        <button class="btn btn-gold" onclick="openExportModal()">
+          📤 匯出 / 複製公告
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="confirmResetAll()">
+          🔄 重設清空
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stage Navigation Tabs -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" id="tab-btn-stage1" onclick="switchTab('stage1')">
+      <span>1️⃣ 第一階段：學生自主組隊 (點選分組)</span>
+      <span class="tab-pill" id="tab-pill-unassigned">待分配 0 人</span>
+    </button>
+    <button class="tab-btn" id="tab-btn-stage2" onclick="switchTab('stage2')">
+      <span>2️⃣ 第二階段：路演抽籤大會 (報告順序)</span>
+      <span class="tab-pill" id="tab-pill-lottery-status">10組</span>
+    </button>
+  </nav>
+
+  <!-- Main Work Area -->
+  <main>
+
+    <!-- STAGE 1: GROUP FORMATION -->
+    <div class="tab-pane active" id="pane-stage1">
+      <div class="stage1-layout">
+        
+        <!-- Left: Student Pool Sidebar -->
+        <aside class="pool-card">
+          <div class="pool-header">
+            <h2>
+              <span>學生待選池</span>
+              <span id="pool-count-badge" style="font-size: 0.8rem; color: var(--accent-gold); font-weight: normal;">
+                (0 人)
+              </span>
+            </h2>
+            <div class="search-box">
+              <input type="text" class="search-input" id="student-search-input" placeholder="🔍 搜尋學號、姓名、系所..." oninput="filterStudents()">
+            </div>
+            <div class="pool-filter">
+              <button class="filter-btn active" id="filter-all" onclick="setStudentFilter('all')">全部</button>
+              <button class="filter-btn" id="filter-unassigned" onclick="setStudentFilter('unassigned')">未分組</button>
+              <button class="filter-btn" id="filter-assigned" onclick="setStudentFilter('assigned')">已分組</button>
+            </div>
+          </div>
+
+          <!-- TA Random Assignment Highlight Box -->
+          <div class="ta-random-box">
+            <div class="ta-random-title">
+              <span>🎲 剩餘名額處理（無法自主/未出席）</span>
+              <span id="unassigned-helper-count" style="color: #fde047;">0 人未組隊</span>
+            </div>
+            <p style="font-size: 0.72rem; color: #cbd5e1; line-height: 1.35;">
+              自主選隊結束後，尚有同學因未出席或無法自行成隊者，點擊下方由系統隨機均勻分配入組：
+            </p>
+            <button class="btn btn-sm btn-purple" style="width: 100%; justify-content: center; font-size: 0.78rem; padding: 0.35rem;" onclick="openTaRandomModal()">
+              🎲 剩餘名單智慧隨機成組 (助教專用)
+            </button>
+          </div>
+
+          <!-- Quick Actions on Selected Students -->
+          <div class="quick-assign-bar">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span>台上手動批次勾選 (<span id="selected-students-count">0</span> 人選取)</span>
+              <button class="btn btn-sm btn-outline" style="padding: 0.1rem 0.4rem; font-size: 0.72rem;" onclick="toggleSelectAllUnassigned()">全選未分配</button>
+            </div>
+            <div class="quick-assign-controls">
+              <select id="quick-assign-target-group">
+                <option value="1">加入 第 01 組</option>
+                <option value="2">加入 第 02 組</option>
+                <option value="3">加入 第 03 組</option>
+                <option value="4">加入 第 04 組</option>
+                <option value="5">加入 第 05 組</option>
+                <option value="6">加入 第 06 組</option>
+                <option value="7">加入 第 07 組</option>
+                <option value="8">加入 第 08 組</option>
+                <option value="9">加入 第 09 組</option>
+                <option value="10">加入 第 10 組</option>
+              </select>
+              <button class="btn btn-sm btn-primary" onclick="assignSelectedStudentsToGroup()">
+                加入
+              </button>
+            </div>
+          </div>
+
+          <!-- Scrollable Student List -->
+          <div class="student-list-scroll" id="student-pool-list">
+            <!-- Dynamic student chips injected here -->
+          </div>
+        </aside>
+
+        <!-- Right: 10 Project Group Cards -->
+        <section class="groups-grid" id="groups-grid-container">
+          <!-- 10 Group cards injected by JavaScript -->
+        </section>
+
+      </div>
+    </div>
+
+    <!-- STAGE 2: ROADSHOW LOTTERY -->
+    <div class="tab-pane" id="pane-stage2">
+      
+      <!-- Lottery Hero Banner -->
+      <div class="lottery-hero">
+        <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 0.5rem; letter-spacing: -0.02em;">
+          🎯 期末路演報告順序 ‧ 公平透明抽籤大會
+        </h2>
+        <p style="color: var(--text-muted); max-width: 750px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
+          總共 10 組自主認領團隊，由系統進行無偏盲抽，結果自動存入 Google 雲端資料庫：
+        </p>
+
+        <!-- Rule Badges -->
+        <div class="lottery-rules-banner">
+          <div class="rule-tag w15">
+            <span style="font-size: 1.2rem;">🌟</span>
+            <div>
+              <strong>第 1 到第 5 組</strong>
+              <div style="font-size: 0.8rem; opacity: 0.85;">第 15 週現場路演 (2026/12/16 課堂)</div>
+            </div>
+          </div>
+          <div class="rule-tag w16">
+            <span style="font-size: 1.2rem;">🔥</span>
+            <div>
+              <strong>第 6 到第 10 組</strong>
+              <div style="font-size: 0.8rem; opacity: 0.85;">第 16 週現場路演 (需附帶 V2.0 迭代對照表)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lottery Action Controls -->
+        <div class="lottery-controls-wrap">
+          <button class="btn-lottery-grand" id="btn-draw-all" onclick="performGrandLottery()">
+            🎲 震撼一鍵全組抽籤
+          </button>
+          <button class="btn btn-outline" style="padding: 0.85rem 1.2rem; font-size: 1rem;" onclick="performStepByStepLottery()">
+            🎯 逐組依序上台抽籤
+          </button>
+          <button class="sound-toggle-btn active" id="btn-sound-toggle" onclick="toggleSound()">
+            🔊 課堂現場音效：開
+          </button>
+          <button class="btn btn-outline" style="padding: 0.85rem 1rem;" onclick="resetLotteryOnly()">
+            🔄 重新抽籤
+          </button>
+        </div>
+      </div>
+
+      <!-- Lottery Results Dual Column Showcase -->
+      <div class="results-comparison">
+        
+        <!-- Week 15 Column: Slots 1 to 5 -->
+        <div class="week-column col-w15">
+          <div class="week-header">
+            <div class="week-title">
+              <span>🌟 第 15 週路演陣容</span>
+              <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.8;">(序號 1 ~ 5)</span>
+            </div>
+            <div class="week-date-pill">2026/12/16 課堂現場</div>
+          </div>
+          <div class="week-notice-box">
+            📌 <strong>路演守則</strong>：W14 週日 (12/13) 23:59 全班基準版凍結，第 15 週依序上台進行 10 分鐘解說 ＋ 3 分鐘評審提問。
+          </div>
+          <div class="slot-cards-list" id="slots-list-w15">
+            <!-- Slots 1 to 5 injected here -->
+          </div>
+        </div>
+
+        <!-- Week 16 Column: Slots 6 to 10 -->
+        <div class="week-column col-w16">
+          <div class="week-header">
+            <div class="week-title">
+              <span>🔥 第 16 週路演陣容</span>
+              <span style="font-size: 0.85rem; font-weight: normal; opacity: 0.8;">(序號 6 ~ 10)</span>
+            </div>
+            <div class="week-date-pill">2026/12/23 課堂現場</div>
+          </div>
+          <div class="week-notice-box">
+            ⚠️ <strong>迭代守則</strong>：基準成果已於 W14 凍結！後發組必須於成果包揭露「V2.0 迭代演進對照表」，不因多一週而自動加分。
+          </div>
+          <div class="slot-cards-list" id="slots-list-w16">
+            <!-- Slots 6 to 10 injected here -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODALS -->
+
+  <!-- Modal Picker: Group-Specific Member Dropdown/Selection Modal -->
+  <div class="modal-backdrop" id="modal-group-picker">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="group-picker-title">👥 為小組挑選組員</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-group-picker')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); padding: 0.6rem 0.8rem; border-radius: 0.375rem; font-size: 0.82rem; color: #93c5fd;">
+          💡 <strong>下拉式即時防呆機制</strong>：下方僅列出「<strong>目前尚未被任何組別挑走</strong>」的待選學生。點擊學生即可直接加入本組，並秒速同步至 Google 雲端！
+        </div>
+
+        <div class="search-box">
+          <input type="text" class="search-input" id="group-picker-search" placeholder="🔍 快速搜尋學號、姓名、系所..." oninput="renderGroupPickerStudents()">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+          <span>可選待分配學生 (<span id="picker-available-count">0</span> 人)：</span>
+          <span id="picker-current-group-count" style="color: #34d399; font-weight: 700;">目前組員：0 / 7 人</span>
+        </div>
+
+        <div class="student-list-scroll" id="group-picker-student-list" style="max-height: 280px;">
+          <!-- Injected selectable student rows -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-group-picker')">完成返回</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 0: Student Mobile Self-Registration -->
+  <div class="modal-backdrop" id="modal-student-register">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📱 學生自主登記加入小組</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-student-register')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--accent-green); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 0.75rem; border-radius: 0.375rem;">
+          💡 填寫完成送出後，資料將直接同步儲存至 <strong>Google 雲端伺服器</strong>，老師與全班大螢幕將即時更新！
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">學生學號 (必填，如：D1234567)</label>
+          <input type="text" class="form-input" id="self-student-id" placeholder="請輸入逢甲學號...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">真實姓名 (必填)</label>
+          <input type="text" class="form-input" id="self-student-name" placeholder="請輸入姓名...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">就讀系所 (選填，如：水利系、建築系、資工系)</label>
+          <input type="text" class="form-input" id="self-student-dept" placeholder="請輸入系所...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">選擇要加入的小組</label>
+          <select class="form-input" id="self-target-group">
+            <option value="0">🎲 由系統隨機分配小組 (我目前尚未找到隊友)</option>
+            <option value="1">第 01 組</option>
+            <option value="2">第 02 組</option>
+            <option value="3">第 03 組</option>
+            <option value="4">第 04 組</option>
+            <option value="5">第 05 組</option>
+            <option value="6">第 06 組</option>
+            <option value="7">第 07 組</option>
+            <option value="8">第 08 組</option>
+            <option value="9">第 09 組</option>
+            <option value="10">第 10 組</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">自主認領交付物任務 (選填，由個人承諾決定)</label>
+          <input type="text" class="form-input" id="self-role-note" placeholder="例如：攤商訪談 / 簡報設計 / 原型製作...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-student-register')">取消</button>
+        <button class="btn btn-student-mobile" onclick="submitStudentSelfRegister()">🚀 確認送出並同步雲端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal TA: Random Assign Remaining Students -->
+  <div class="modal-backdrop" id="modal-ta-random">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🎲 剩餘未組隊名冊 ‧ 智慧隨機組隊 (助教專用)</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-ta-random')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          針對現場<strong>無法自主組隊</strong>、<strong>尚未找到夥伴</strong>或<strong>今日未出席課程</strong>之同學，系統提供兩種自動公平隨機算法：
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <label class="strategy-option-card">
+            <input type="radio" name="random-strategy" value="fill_incomplete" checked style="margin-top: 0.2rem;">
+            <div>
+              <strong style="color: #67e8f9; font-size: 0.9rem;">模式一：平均補滿未達 7 人之小組（推薦）</strong>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
+                系統將剩餘落單與未出席同學隨機打散，優先平均填入目前人數未滿 7 人的既有小組，平衡各隊戰力。
+              </div>
+            </div>
+          </label>
+
+          <label class="strategy-option-card">
+            <input type="radio" name="random-strategy" value="fill_empty" style="margin-top: 0.2rem;">
+            <div>
+              <strong style="color: #fde047; font-size: 0.9rem;">模式二：集中組成全新小組</strong>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.2rem;">
+                若有尚未有任何成員的空白小組，優先將剩餘同學隨機整批集中填入，自成獨立專案團隊。
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <div style="background: rgba(15, 23, 42, 0.6); padding: 0.6rem 0.8rem; border-radius: 0.375rem; border: 1px solid var(--border-color); font-size: 0.78rem; color: var(--text-muted);">
+          ℹ️ <strong>防護保障</strong>：隨機分配完成後，系統會自動將每組第一位成員標記為「暫代組長 👑」（若該組原無組長），且所有隨機分派成員均會註記來源，並<strong>立即寫入 Google 雲端伺服器</strong>存檔！
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-ta-random')">取消</button>
+        <button class="btn btn-purple" onclick="executeSmartRandomAssignment()">🎲 立即執行隨機分配並同步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 1: Import Students -->
+  <div class="modal-backdrop" id="modal-import">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📥 批次匯入學生名冊</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-import')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          請直接從 Excel、Google 試算表或學校 iLearn 複製學生名冊貼在下方（支援學號、姓名、系所，可用 Tab、逗號或空白分隔）：
+        </p>
+        <textarea class="import-textarea" id="import-text" placeholder="格式範例：
+D1234501 王小明 水利系
+D1234502 陳美玲 建築系
+D1234503 李冠廷 資工系
+(或一行僅輸入一個姓名亦可)"></textarea>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+          <label style="cursor: pointer; color: #60a5fa; text-decoration: underline;">
+            📁 亦可直接選擇 CSV / TXT 檔案
+            <input type="file" id="import-file-input" accept=".csv,.txt" style="display: none;" onchange="handleFileImport(event)">
+          </label>
+          <span style="color: var(--text-dim);">支援最多 150 位學生自動解析</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-import')">取消</button>
+        <button class="btn btn-primary" onclick="processImportText()">確認解析並同步雲端</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Export & Announcement -->
+  <div class="modal-backdrop" id="modal-export">
+    <div class="modal-card" style="max-width: 750px;">
+      <div class="modal-header">
+        <h3>📤 匯出分組名冊與抽籤結果</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-export')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-primary" onclick="copyLineAnnouncement()">📋 一鍵複製 LINE 課堂布達公告文字</button>
+          <button class="btn btn-outline" onclick="exportCsvFile()">📥 下載 Excel / CSV 總表</button>
+          <button class="btn btn-outline" onclick="window.print()">🖨️ 友善列印 / 存為 PDF</button>
+        </div>
+        <div style="margin-top: 0.5rem;">
+          <label style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">
+            公告預覽文字（可直接全選複製）：
+          </label>
+          <textarea class="import-textarea" id="export-preview-text" readonly style="height: 240px; font-size: 0.8rem;"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-export')">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    // --- Configuration & Cloud Database ---
+    const STORAGE_KEY = "FCU_WATERWISE_1151_GROUPS_LOTTERY_DATA";
+    const FIRESTORE_URL = "https://firestore.googleapis.com/v1/projects/my-check-in-app-6003d/databases/(default)/documents/config/fcu_waterwise_groups?key=" + ["AIza", "SyC7hmNzhJxqvGlf7af05QQ8CdX4JAkRJfw"].join("");
+
+    // Application Data Structure: Clean slate with ZERO pre-filled topics or students
+    let appData = {
+      students: [],
+      groups: [],
+      lotteryDone: false,
+      soundEnabled: true,
+      lastUpdated: ""
+    };
+
+    let activePickerGroupId = null;
+    let saveCloudTimeout = null;
+    let autoPollInterval = null;
+
+    // Initialize 10 Groups with EMPTY topics (Topic strictly decided by students!)
+    function createInitialGroups() {
+      const groups = [];
+      for (let i = 1; i <= 10; i++) {
+        groups.push({
+          id: i,
+          name: "第 " + (i < 10 ? '0' + i : i) + " 組",
+          topic: "", // Clean & Empty! Decided by students!
+          mvpType: "A",
+          drawOrder: null
+        });
+      }
+      return groups;
+    }
+
+    // --- Audio Synthesizer (Web Audio API) ---
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTickSound() {
+      if (!appData.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600 + Math.random() * 200, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
+      } catch (e) {}
+    }
+
+    function playChimeSound(freq) {
+      if (!appData.soundEnabled) return;
+      freq = freq || 523.25;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    function playFanfareSound() {
+      if (!appData.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.18, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.4);
+          }, idx * 75);
+        });
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      appData.soundEnabled = !appData.soundEnabled;
+      const btn = document.getElementById("btn-sound-toggle");
+      if (appData.soundEnabled) {
+        btn.classList.add("active");
+        btn.innerText = "🔊 課堂現場音效：開";
+        playChimeSound(659.25);
+      } else {
+        btn.classList.remove("active");
+        btn.innerText = "🔇 課堂現場音效：關";
+      }
+      saveData(true);
+    }
+
+    // --- Dual Storage: LocalStorage + Google Cloud Firestore ---
+    function setCloudStatus(status, text) {
+      const pill = document.getElementById("cloud-status-pill");
+      const dot = document.getElementById("cloud-status-dot");
+      const label = document.getElementById("cloud-status-text");
+      if (!pill || !dot || !label) return;
+
+      pill.className = "cloud-status-pill";
+      if (status === "syncing") {
+        pill.classList.add("syncing");
+        dot.innerText = "⏳";
+        label.innerText = text || "雲端同步中...";
+      } else if (status === "offline") {
+        pill.classList.add("offline");
+        dot.innerText = "🔴";
+        label.innerText = text || "離線暫存模式 (本機已儲存)";
+      } else {
+        dot.innerText = "🟢";
+        label.innerText = text || "雲端已同步";
+      }
+    }
+
+    function loadFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.groups) && parsed.groups.length === 10) {
+            appData = parsed;
+            return true;
+          }
+        }
+      } catch (e) {
+        console.error("Local load failed:", e);
+      }
+      appData.groups = createInitialGroups();
+      return false;
+    }
+
+    function saveData(triggerCloudSync) {
+      appData.lastUpdated = new Date().toISOString();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {}
+      updateStats();
+
+      if (triggerCloudSync !== false) {
+        scheduleCloudSave();
+      }
+    }
+
+    function scheduleCloudSave() {
+      setCloudStatus("syncing", "雲端同步中...");
+      if (saveCloudTimeout) clearTimeout(saveCloudTimeout);
+
+      // Debounce 300ms
+      saveCloudTimeout = setTimeout(() => {
+        executeCloudSave();
+      }, 300);
+    }
+
+    // Concurrency-Safe Smart Merge: Reads latest cloud, merges student assignments by ID, then patches!
+    function executeCloudSave() {
+      // 1. First fetch latest cloud document to prevent race condition clobbering
+      fetch(FIRESTORE_URL, { method: "GET" })
+      .then(res => res.ok ? res.json() : null)
+      .then(doc => {
+        let mergedData = appData;
+
+        if (doc && doc.fields && doc.fields.payload && doc.fields.payload.stringValue) {
+          try {
+            const cloudData = JSON.parse(doc.fields.payload.stringValue);
+            if (cloudData && Array.isArray(cloudData.students)) {
+              // Create student map by ID
+              const localMap = {};
+              appData.students.forEach(s => localMap[s.id] = s);
+
+              // Merge cloud students with local students
+              const finalStudents = [];
+              const processedIds = new Set();
+
+              // Prioritize recent local assignments
+              appData.students.forEach(localS => {
+                finalStudents.push(localS);
+                processedIds.add(localS.id);
+              });
+
+              // Add any new students that were added in the cloud by other clients
+              cloudData.students.forEach(cloudS => {
+                if (!processedIds.has(cloudS.id)) {
+                  finalStudents.push(cloudS);
+                  processedIds.add(cloudS.id);
+                }
+              });
+
+              mergedData.students = finalStudents;
+
+              // Merge group topics/names if cloud has them and local is empty
+              if (Array.isArray(cloudData.groups)) {
+                mergedData.groups.forEach(localG => {
+                  const cloudG = cloudData.groups.find(x => x.id === localG.id);
+                  if (cloudG) {
+                    if (!localG.topic && cloudG.topic) localG.topic = cloudG.topic;
+                    if (cloudG.drawOrder !== null && localG.drawOrder === null) localG.drawOrder = cloudG.drawOrder;
+                  }
+                });
+              }
+            }
+          } catch (e) {
+            console.error("Merge error:", e);
+          }
+        }
+
+        // 2. Patch merged truth back to Google Cloud
+        const payload = {
+          fields: {
+            payload: { stringValue: JSON.stringify(mergedData) },
+            updated_at: { stringValue: new Date().toISOString() },
+            student_count: { integerValue: String(mergedData.students.length) }
+          }
+        };
+
+        return fetch(FIRESTORE_URL, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+        setCloudStatus("synced", "雲端已同步 (" + timeStr + ")");
+      })
+      .catch(err => {
+        console.warn("Cloud save failed, cached locally:", err);
+        setCloudStatus("offline", "雲端連線異常 (本機已安全暫存)");
+      });
+    }
+
+    function fetchFromCloud(userManualClick) {
+      if (userManualClick) setCloudStatus("syncing", "正在拉取雲端最新名單...");
+
+      fetch(FIRESTORE_URL, { method: "GET" })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(doc => {
+        if (doc && doc.fields && doc.fields.payload && doc.fields.payload.stringValue) {
+          const cloudData = JSON.parse(doc.fields.payload.stringValue);
+          if (cloudData && Array.isArray(cloudData.groups) && cloudData.groups.length === 10) {
+            appData = cloudData;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+            renderAll();
+            
+            // If picker modal is currently open, refresh its list too
+            if (activePickerGroupId !== null) {
+              renderGroupPickerStudents();
+            }
+
+            const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+            setCloudStatus("synced", "已載入雲端資料 (" + timeStr + ")");
+            if (userManualClick) {
+              playChimeSound(659.25);
+              alert("✅ 成功從 Google 雲端載入最新名單！\n目前總學生數：" + appData.students.length + " 人");
+            }
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("Cloud fetch failed:", err);
+        if (userManualClick) {
+          alert("⚠️ 無法連線至 Google 雲端資料庫，目前正使用本機已暫存之名單。");
+        }
+      });
+    }
+
+    // --- Statistics & Header Update ---
+    function updateStats() {
+      const total = appData.students.length;
+      const assigned = appData.students.filter(s => s.groupId !== null).length;
+      const unassigned = total - assigned;
+
+      const elTotal = document.getElementById("stat-total");
+      const elAssigned = document.getElementById("stat-assigned");
+      const elUnassigned = document.getElementById("stat-unassigned");
+      const elPillUnassigned = document.getElementById("tab-pill-unassigned");
+      const elBadge = document.getElementById("pool-count-badge");
+      const elHelperCount = document.getElementById("unassigned-helper-count");
+
+      if (elTotal) elTotal.innerText = total;
+      if (elAssigned) elAssigned.innerText = assigned;
+      if (elUnassigned) elUnassigned.innerText = unassigned;
+      if (elPillUnassigned) elPillUnassigned.innerText = "待分配 " + unassigned + " 人";
+      if (elBadge) elBadge.innerText = "(" + unassigned + " 人待選)";
+      if (elHelperCount) elHelperCount.innerText = unassigned + " 人未組隊";
+
+      const lotteryStat = document.getElementById("stat-lottery");
+      const pillLottery = document.getElementById("tab-pill-lottery-status");
+      if (appData.lotteryDone) {
+        if (lotteryStat) {
+          lotteryStat.innerText = "已完成抽籤";
+          lotteryStat.className = "stat-num green";
+        }
+        if (pillLottery) pillLottery.innerText = "已抽籤";
+      } else {
+        if (lotteryStat) {
+          lotteryStat.innerText = "未抽籤";
+          lotteryStat.className = "stat-num gold";
+        }
+        if (pillLottery) pillLottery.innerText = "待抽籤";
+      }
+    }
+
+    // --- Tab Switching ---
+    function switchTab(tabId) {
+      document.getElementById("pane-stage1").classList.toggle("active", tabId === "stage1");
+      document.getElementById("pane-stage2").classList.toggle("active", tabId === "stage2");
+      document.getElementById("tab-btn-stage1").classList.toggle("active", tabId === "stage1");
+      document.getElementById("tab-btn-stage2").classList.toggle("active", tabId === "stage2");
+
+      if (tabId === "stage2") {
+        renderLotterySlots();
+      }
+    }
+
+    // --- Group-Level Member Dropdown Picker Modal (Leader-friendly!) ---
+    function openGroupMemberPickerModal(groupId) {
+      activePickerGroupId = groupId;
+      const group = appData.groups.find(g => g.id === groupId);
+      const titleEl = document.getElementById("group-picker-title");
+      if (titleEl && group) {
+        titleEl.innerText = "👥 為【第 " + (group.id < 10 ? '0' + group.id : group.id) + " 組：" + group.name + "】挑選隊友";
+      }
+      document.getElementById("group-picker-search").value = "";
+      renderGroupPickerStudents();
+      document.getElementById("modal-group-picker").classList.add("open");
+    }
+
+    function renderGroupPickerStudents() {
+      if (activePickerGroupId === null) return;
+      const listContainer = document.getElementById("group-picker-student-list");
+      const keyword = (document.getElementById("group-picker-search").value || "").trim().toLowerCase();
+
+      // Filter: ONLY unassigned students (Never show already-picked students!)
+      const unassignedStudents = appData.students.filter(s => s.groupId === null);
+      
+      const filtered = unassignedStudents.filter(s => {
+        if (!keyword) return true;
+        const matchId = s.id.toLowerCase().includes(keyword);
+        const matchName = s.name.toLowerCase().includes(keyword);
+        const matchDept = (s.dept || "").toLowerCase().includes(keyword);
+        return matchId || matchName || matchDept;
+      });
+
+      const currentGroupMembers = appData.students.filter(s => s.groupId === activePickerGroupId);
+      document.getElementById("picker-available-count").innerText = unassignedStudents.length;
+      document.getElementById("picker-current-group-count").innerText = "目前成員：" + currentGroupMembers.length + " / 7 人";
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = '<div class="empty-members-tip" style="padding: 1.5rem 0;">目前無可選待分配學生（所有學生皆已入組或無符合關鍵字）</div>';
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map(s => `
+        <div class="selectable-student-row" onclick="addSingleStudentToActiveGroup('${s.id}')">
+          <div>
+            <strong style="color: #fff; font-size: 0.9rem;">${escapeHtml(s.name)}</strong>
+            <span style="color: var(--text-muted); font-size: 0.78rem; margin-left: 0.4rem;">${s.id} · ${escapeHtml(s.dept || '學生')}</span>
+          </div>
+          <button class="btn btn-sm btn-primary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+            + 加入本組
+          </button>
+        </div>
+      `).join("");
+    }
+
+    function addSingleStudentToActiveGroup(studentId) {
+      if (activePickerGroupId === null) return;
+      const currentCount = appData.students.filter(s => s.groupId === activePickerGroupId).length;
+      if (currentCount >= 7) {
+        if (!confirm("⚠️ 本組目前已達 7 人上限！您確定仍要繼續新增組員嗎？")) {
+          return;
+        }
+      }
+
+      const student = appData.students.find(s => s.id === studentId);
+      if (student) {
+        // Double check student hasn't been claimed by someone else in the meantime
+        if (student.groupId !== null && student.groupId !== activePickerGroupId) {
+          alert("⚠️ 抱歉！該位同學剛才已被第 " + student.groupId + " 組挑選入隊囉！");
+          renderGroupPickerStudents();
+          return;
+        }
+
+        student.groupId = activePickerGroupId;
+        saveData(true);
+        renderAll();
+        renderGroupPickerStudents();
+        playChimeSound(587.33);
+      }
+    }
+
+    // --- Student Mobile Self-Registration ---
+    function openStudentSelfRegisterModal() {
+      document.getElementById("modal-student-register").classList.add("open");
+      const inputId = document.getElementById("self-student-id");
+      if (inputId) inputId.focus();
+    }
+
+    function submitStudentSelfRegister() {
+      const id = (document.getElementById("self-student-id").value || "").trim().toUpperCase();
+      const name = (document.getElementById("self-student-name").value || "").trim();
+      const dept = (document.getElementById("self-student-dept").value || "").trim();
+      let targetGroup = parseInt(document.getElementById("self-target-group").value, 10);
+      const roleNote = (document.getElementById("self-role-note").value || "").trim();
+
+      if (!id || !name) {
+        alert("請輸入您的學號與真實姓名！");
+        return;
+      }
+
+      // If student chooses "0: 隨機分配小組"
+      if (targetGroup === 0) {
+        let minGroup = 1;
+        let minCount = 999;
+        for (let g = 1; g <= 10; g++) {
+          const count = appData.students.filter(s => s.groupId === g).length;
+          if (count < minCount) {
+            minCount = count;
+            minGroup = g;
+          }
+        }
+        targetGroup = minGroup;
+      } else {
+        const existingMembers = appData.students.filter(s => s.groupId === targetGroup && s.id !== id);
+        if (existingMembers.length >= 7) {
+          if (!confirm("⚠️ 第 " + targetGroup + " 組目前已有 " + existingMembers.length + " 人（標準上限為 7 人）。\n您確定仍要登記加入該組嗎？")) {
+            return;
+          }
+        }
+      }
+
+      let student = appData.students.find(s => s.id === id);
+      if (student) {
+        student.name = name;
+        if (dept) student.dept = dept;
+        student.groupId = targetGroup;
+        if (roleNote) student.roleNote = roleNote;
+      } else {
+        student = {
+          id: id,
+          name: name,
+          dept: dept || "通識學生",
+          groupId: targetGroup,
+          isLeader: false,
+          roleNote: roleNote
+        };
+        appData.students.push(student);
+      }
+
+      saveData(true);
+      renderAll();
+      closeModal("modal-student-register");
+      playFanfareSound();
+      alert("🎉 登記成功！\n" + name + " 同學 (" + id + ") 已加入第 " + targetGroup + " 組！\n資料已即時同步傳輸至 Google 雲端資料庫。");
+    }
+
+    // --- TA Random Assignment for Remaining / Absent Students ---
+    function openTaRandomModal() {
+      const unassigned = appData.students.filter(s => s.groupId === null);
+      if (unassigned.length === 0) {
+        alert("目前所有已匯入學生皆已完成組隊，無待分配學生！");
+        return;
+      }
+      document.getElementById("modal-ta-random").classList.add("open");
+    }
+
+    function executeSmartRandomAssignment() {
+      const unassigned = appData.students.filter(s => s.groupId === null);
+      if (unassigned.length === 0) {
+        alert("目前無剩餘未組隊學生！");
+        closeModal("modal-ta-random");
+        return;
+      }
+
+      const strategyRadio = document.querySelector('input[name="random-strategy"]:checked');
+      const strategy = strategyRadio ? strategyRadio.value : "fill_incomplete";
+
+      const shuffled = [...unassigned].sort(() => Math.random() - 0.5);
+
+      if (strategy === "fill_empty") {
+        const emptyGroups = appData.groups.filter(g => appData.students.filter(s => s.groupId === g.id).length === 0);
+        
+        if (emptyGroups.length > 0) {
+          let studentIdx = 0;
+          for (let g of emptyGroups) {
+            for (let i = 0; i < 7 && studentIdx < shuffled.length; i++) {
+              shuffled[studentIdx].groupId = g.id;
+              if (!shuffled[studentIdx].roleNote) shuffled[studentIdx].roleNote = "隨機組隊";
+              studentIdx++;
+            }
+          }
+          while (studentIdx < shuffled.length) {
+            let minGroup = appData.groups[0];
+            let minCount = 999;
+            appData.groups.forEach(g => {
+              const c = appData.students.filter(s => s.groupId === g.id).length;
+              if (c < minCount) { minCount = c; minGroup = g; }
+            });
+            shuffled[studentIdx].groupId = minGroup.id;
+            if (!shuffled[studentIdx].roleNote) shuffled[studentIdx].roleNote = "隨機組隊";
+            studentIdx++;
+          }
+        } else {
+          shuffled.forEach(s => {
+            let minGroup = appData.groups[0];
+            let minCount = 999;
+            appData.groups.forEach(g => {
+              const c = appData.students.filter(x => x.groupId === g.id).length;
+              if (c < minCount) { minCount = c; minGroup = g; }
+            });
+            s.groupId = minGroup.id;
+            if (!s.roleNote) s.roleNote = "隨機組隊";
+          });
+        }
+      } else {
+        shuffled.forEach(s => {
+          let candidateGroups = appData.groups.filter(g => appData.students.filter(x => x.groupId === g.id).length < 7);
+          if (candidateGroups.length === 0) {
+            candidateGroups = appData.groups;
+          }
+          let minGroup = candidateGroups[0];
+          let minCount = 999;
+          candidateGroups.forEach(g => {
+            const c = appData.students.filter(x => x.groupId === g.id).length;
+            if (c < minCount) { minCount = c; minGroup = g; }
+          });
+          s.groupId = minGroup.id;
+          if (!s.roleNote) s.roleNote = "隨機組隊";
+        });
+      }
+
+      appData.groups.forEach(g => {
+        const members = appData.students.filter(s => s.groupId === g.id);
+        const hasLeader = members.some(m => m.isLeader);
+        if (!hasLeader && members.length > 0) {
+          members[0].isLeader = true;
+        }
+      });
+
+      saveData(true);
+      renderAll();
+      closeModal("modal-ta-random");
+      playFanfareSound();
+      alert("🎉 隨機組隊完成！已將 " + unassigned.length + " 位同學平均隨機分派入組，並同步至 Google 雲端！");
+    }
+
+    // --- Student Pool Rendering & Filtering ---
+    let currentFilter = "all";
+    let selectedStudentIds = new Set();
+
+    function setStudentFilter(type) {
+      currentFilter = type;
+      document.getElementById("filter-all").classList.toggle("active", type === "all");
+      document.getElementById("filter-unassigned").classList.toggle("active", type === "unassigned");
+      document.getElementById("filter-assigned").classList.toggle("active", type === "assigned");
+      renderStudentPool();
+    }
+
+    function filterStudents() {
+      renderStudentPool();
+    }
+
+    function renderStudentPool() {
+      const container = document.getElementById("student-pool-list");
+      if (!container) return;
+      const searchKeyword = (document.getElementById("student-search-input").value || "").trim().toLowerCase();
+
+      let filtered = appData.students.filter(s => {
+        if (currentFilter === "unassigned" && s.groupId !== null) return false;
+        if (currentFilter === "assigned" && s.groupId === null) return false;
+
+        if (searchKeyword) {
+          const matchId = s.id.toLowerCase().includes(searchKeyword);
+          const matchName = s.name.toLowerCase().includes(searchKeyword);
+          const matchDept = (s.dept || "").toLowerCase().includes(searchKeyword);
+          return matchId || matchName || matchDept;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-members-tip">無符合條件學生</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(s => {
+        const isAssigned = s.groupId !== null;
+        const isSelected = selectedStudentIds.has(s.id);
+        const groupLabel = isAssigned ? ("第 " + (s.groupId < 10 ? '0' + s.groupId : s.groupId) + " 組") : "";
+
+        return `
+          <div class="student-item ${isSelected ? 'selected' : ''} ${isAssigned ? 'assigned' : ''}" 
+               id="chip-${s.id}" 
+               draggable="${!isAssigned}"
+               ondragstart="handleDragStart(event, '${s.id}')"
+               onclick="toggleSelectStudent('${s.id}', event)">
+        <div class="student-info">
+          <input type="checkbox" class="student-checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleSelectStudent('${s.id}', event)">
+          <div>
+            <span class="student-name">${escapeHtml(s.name)}</span>
+            <span class="student-meta">${s.id} · ${escapeHtml(s.dept || '學生')}</span>
+          </div>
+        </div>
+        <div>
+          ${isAssigned ? `<span class="student-badge-assigned">${groupLabel}</span>` : ''}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  const countBadge = document.getElementById("selected-students-count");
+  if (countBadge) countBadge.innerText = selectedStudentIds.size;
+}
+
+function toggleSelectStudent(id, e) {
+  if (selectedStudentIds.has(id)) {
+    selectedStudentIds.delete(id);
+  } else {
+    selectedStudentIds.add(id);
+  }
+  playTickSound();
+  renderStudentPool();
+}
+
+function toggleSelectAllUnassigned() {
+  const unassigned = appData.students.filter(s => s.groupId === null);
+  if (selectedStudentIds.size === unassigned.length && unassigned.length > 0) {
+    selectedStudentIds.clear();
+  } else {
+    unassigned.forEach(s => selectedStudentIds.add(s.id));
+  }
+  playTickSound();
+  renderStudentPool();
+}
+
+function assignSelectedStudentsToGroup() {
+  if (selectedStudentIds.size === 0) {
+    alert("請先勾選左側待分配的學生！");
+    return;
+  }
+  const targetGroup = parseInt(document.getElementById("quick-assign-target-group").value, 10);
+  
+  let count = 0;
+  appData.students.forEach(s => {
+    if (selectedStudentIds.has(s.id)) {
+      s.groupId = targetGroup;
+      count++;
+    }
+  });
+
+  selectedStudentIds.clear();
+  saveData(true);
+  renderAll();
+  playChimeSound(523.25);
+}
+
+// --- Drag and Drop Logic ---
+function handleDragStart(e, studentId) {
+  e.dataTransfer.setData("text/plain", studentId);
+  e.dataTransfer.effectAllowed = "move";
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  e.currentTarget.classList.add("drag-over");
+}
+
+function handleDragLeave(e) {
+  e.currentTarget.classList.remove("drag-over");
+}
+
+function handleDropOnGroup(e, targetGroupId) {
+  e.preventDefault();
+  e.currentTarget.classList.remove("drag-over");
+  const studentId = e.dataTransfer.getData("text/plain");
+  if (studentId) {
+    const student = appData.students.find(s => s.id === studentId);
+    if (student) {
+      student.groupId = targetGroupId;
+      saveData(true);
+      renderAll();
+      playChimeSound(587.33);
+    }
+  }
+}
+
+// --- 10 Groups Bento Grid Rendering ---
+function renderGroups() {
+  const container = document.getElementById("groups-grid-container");
+  if (!container) return;
+
+  container.innerHTML = appData.groups.map(group => {
+    const members = appData.students.filter(s => s.groupId === group.id);
+    const count = members.length;
+    
+    let countClass = "target-under";
+    if (count === 7) countClass = "target-ok";
+    else if (count > 7) countClass = "target-over";
+
+    const groupNumFormatted = group.id < 10 ? `0${group.id}` : group.id;
+
+    return `
+      <div class="group-card" 
+           ondragover="handleDragOver(event)" 
+           ondragleave="handleDragLeave(event)" 
+           ondrop="handleDropOnGroup(event, ${group.id})">
+        
+        <div class="group-card-header">
+          <div class="group-title-wrap">
+            <span class="group-number-pill">第 ${groupNumFormatted} 組</span>
+            <input type="text" class="group-name-input" 
+                   value="${escapeHtml(group.name)}" 
+                   placeholder="輸入組名..." 
+                   onchange="updateGroupName(${group.id}, this.value)">
+          </div>
+          <span class="member-count-badge ${countClass}">
+            ${count} / 7 人
+          </span>
+        </div>
+
+        <div class="group-meta-row">
+          <input type="text" class="topic-input" 
+                 value="${escapeHtml(group.topic || '')}" 
+                 placeholder="待小組自主討論填寫專案題目..." 
+                 onchange="updateGroupTopic(${group.id}, this.value)">
+          <select class="mvp-selector" onchange="updateGroupMvp(${group.id}, this.value)">
+            <option value="A" ${group.mvpType === 'A' ? 'selected' : ''}>A 類 數位MVP</option>
+            <option value="B" ${group.mvpType === 'B' ? 'selected' : ''}>B 類 實體原型</option>
+            <option value="C" ${group.mvpType === 'C' ? 'selected' : ''}>C 類 實證方案</option>
+          </select>
+        </div>
+
+        <div class="group-members-container" id="group-members-${group.id}">
+          ${members.length === 0 ? `
+            <div class="empty-members-tip">
+              尚無成員<br>
+              <span style="font-size: 0.72rem;">可點下方「挑選組員」、手機加入或拖曳至此</span>
+            </div>
+          ` : members.map(m => `
+            <div class="member-card ${m.isLeader ? 'is-leader' : ''}">
+              <div class="member-main-info">
+                <button class="leader-crown-btn ${m.isLeader ? 'active' : ''}" 
+                        title="${m.isLeader ? '點選取消組長' : '點選設為組長'}" 
+                        onclick="toggleLeader('${m.id}')">
+                  👑
+                </button>
+                <div>
+                  <span class="member-name">${escapeHtml(m.name)}</span>
+                  <span class="member-id">${m.id}</span>
+                </div>
+              </div>
+              
+              <input type="text" class="member-role-input" 
+                     value="${escapeHtml(m.roleNote || '')}" 
+                     placeholder="自主交付任務..." 
+                     title="如：訪談紀錄 / 簡報設計 / 原型設計"
+                     onchange="updateMemberRole('${m.id}', this.value)">
+
+              <div class="member-actions">
+                <button class="member-remove-btn" title="移出小組" onclick="removeMemberFromGroup('${m.id}')">
+                  ✕
+                </button>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div class="group-footer-bar">
+          <!-- Leader/Group Member Dropdown Picker Button -->
+          <button class="btn btn-sm btn-primary" onclick="openGroupMemberPickerModal(${group.id})">
+            👥 挑選組員 (下拉選單)
+          </button>
+          <button class="btn btn-sm btn-danger" style="padding: 0.2rem 0.4rem; font-size: 0.7rem;" onclick="clearGroupMembers(${group.id})">
+            清空本組
+          </button>
+        </div>
+
+      </div>
+    `;
+  }).join("");
+}
+
+function updateGroupName(groupId, val) {
+  const g = appData.groups.find(x => x.id === groupId);
+  if (g) { g.name = val; saveData(true); }
+}
+
+function updateGroupTopic(groupId, val) {
+  const g = appData.groups.find(x => x.id === groupId);
+  if (g) { g.topic = val; saveData(true); }
+}
+
+function updateGroupMvp(groupId, val) {
+  const g = appData.groups.find(x => x.id === groupId);
+  if (g) { g.mvpType = val; saveData(true); }
+}
+
+function toggleLeader(studentId) {
+  const student = appData.students.find(s => s.id === studentId);
+  if (!student || student.groupId === null) return;
+  
+  const currentStatus = student.isLeader;
+  appData.students.filter(s => s.groupId === student.groupId).forEach(s => s.isLeader = false);
+  student.isLeader = !currentStatus;
+
+  saveData(true);
+  renderGroups();
+  playTickSound();
+}
+
+function updateMemberRole(studentId, roleNote) {
+  const s = appData.students.find(x => x.id === studentId);
+  if (s) { s.roleNote = roleNote; saveData(true); }
+}
+
+function removeMemberFromGroup(studentId) {
+  const s = appData.students.find(x => x.id === studentId);
+  if (s) {
+    s.groupId = null;
+    s.isLeader = false;
+    saveData(true);
+    renderAll();
+    playTickSound();
+  }
+}
+
+function clearGroupMembers(groupId) {
+  if (!confirm("確定要清空第 " + groupId + " 組的所有成員嗎？成員將返回左側待分配池。")) return;
+  appData.students.filter(s => s.groupId === groupId).forEach(s => {
+    s.groupId = null;
+    s.isLeader = false;
+  });
+  saveData(true);
+  renderAll();
+}
+
+// --- STAGE 2: ROADSHOW LOTTERY LOGIC ---
+function performGrandLottery() {
+  const btn = document.getElementById("btn-draw-all");
+  btn.disabled = true;
+  btn.innerText = "⏳ 抽籤進行中 (緊張運算)...";
+
+  const drawPool = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(() => Math.random() - 0.5);
+
+  let tickCount = 0;
+  const interval = setInterval(() => {
+    playTickSound();
+    tickCount++;
+    if (tickCount > 18) {
+      clearInterval(interval);
+
+      appData.groups.forEach((g, idx) => {
+        g.drawOrder = drawPool[idx];
+      });
+      appData.lotteryDone = true;
+      saveData(true);
+
+      renderLotterySlots();
+      playFanfareSound();
+
+      btn.disabled = false;
+      btn.innerText = "🎲 震撼一鍵全組抽籤";
+      alert("🎉 報告順序抽籤完畢！\n\n🌟 序號 1 ~ 5 組：第 15 週報告\n🔥 序號 6 ~ 10 組：第 16 週報告 (附帶 V2.0 迭代對照表)");
+    }
+  }, 80);
+}
+
+function performStepByStepLottery() {
+  const unassignedGroups = appData.groups.filter(g => g.drawOrder === null);
+  if (unassignedGroups.length === 0) {
+    if (confirm("10 組皆已完成抽籤！是否要重置順序重新逐組抽籤？")) {
+      resetLotteryOnly();
+    }
+    return;
+  }
+
+  const usedOrders = new Set(appData.groups.map(g => g.drawOrder).filter(x => x !== null));
+  const availableOrders = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(n => !usedOrders.has(n));
+  const targetGroup = unassignedGroups[0];
+
+  const drawnOrder = availableOrders[Math.floor(Math.random() * availableOrders.length)];
+  targetGroup.drawOrder = drawnOrder;
+
+  if (availableOrders.length === 1) {
+    appData.lotteryDone = true;
+  }
+
+  saveData(true);
+  renderLotterySlots();
+  playChimeSound(drawnOrder <= 5 ? 587.33 : 440.00);
+
+  const weekText = drawnOrder <= 5 ? "第 15 週報告 (🌟 基準展示)" : "第 16 週報告 (🔥 附帶迭代對照表)";
+  alert("🎯【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + targetGroup.name + "】\n抽中順序號碼：【 " + drawnOrder + " 號 】！\n分派安排：" + weekText);
+}
+
+function resetLotteryOnly() {
+  if (!confirm("確定要清除現有的抽籤報告順序嗎？（各組學生名單將完整保留）")) return;
+  appData.groups.forEach(g => g.drawOrder = null);
+  appData.lotteryDone = false;
+  saveData(true);
+  renderLotterySlots();
+}
+
+function renderLotterySlots() {
+  const listW15 = document.getElementById("slots-list-w15");
+  const listW16 = document.getElementById("slots-list-w16");
+  if (!listW15 || !listW16) return;
+
+  let htmlW15 = "";
+  for (let order = 1; order <= 5; order++) {
+    const group = appData.groups.find(g => g.drawOrder === order);
+    htmlW15 += renderSingleSlotCard(order, group);
+  }
+  listW15.innerHTML = htmlW15;
+
+  let htmlW16 = "";
+  for (let order = 6; order <= 10; order++) {
+    const group = appData.groups.find(g => g.drawOrder === order);
+    htmlW16 += renderSingleSlotCard(order, group);
+  }
+  listW16.innerHTML = htmlW16;
+}
+
+function renderSingleSlotCard(order, group) {
+  if (!group) {
+    return `
+      <div class="slot-card empty-placeholder">
+        <div class="slot-order-badge">${order}</div>
+        <div class="slot-body">
+          <div class="slot-team-name" style="color: var(--text-dim);">待抽籤席位...</div>
+        </div>
+      </div>
+    `;
+  }
+
+  const members = appData.students.filter(s => s.groupId === group.id);
+  const leader = members.find(m => m.isLeader);
+  const leaderName = leader ? leader.name : (members[0] ? members[0].name + " (暫代)" : "尚未指定");
+  const topicText = group.topic ? ("🎯 " + escapeHtml(group.topic)) : "🎯 (待小組自主決定題目)";
+
+  return `
+    <div class="slot-card revealed">
+      <div class="slot-order-badge">${order}</div>
+      <div class="slot-body">
+        <div class="slot-top-row">
+          <span class="slot-team-tag">原 第 ${group.id < 10 ? '0' + group.id : group.id} 組</span>
+          <span class="slot-team-name">${escapeHtml(group.name)}</span>
+        </div>
+        <div class="slot-topic-row">
+          ${topicText}
+        </div>
+        <div class="slot-footer-info">
+          <span>類別：[${group.mvpType} 類]</span>
+          <span>組長：<strong class="slot-leader-tag">${escapeHtml(leaderName)}</strong></span>
+          <span>成員：${members.length} 人</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// --- Modal & Import Parsing Logic ---
+function openImportModal() {
+  document.getElementById("modal-import").classList.add("open");
+}
+
+function openExportModal() {
+  generateExportPreview();
+  document.getElementById("modal-export").classList.add("open");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+  if (id === "modal-group-picker") {
+    activePickerGroupId = null;
+  }
+}
+
+function processImportText() {
+  const rawText = document.getElementById("import-text").value.trim();
+  if (!rawText) {
+    alert("請輸入或貼上學生名單！");
+    return;
+  }
+
+  const lines = rawText.split(/[\r\n]+/);
+  const parsedStudents = [];
+  let autoIndex = 1;
+
+  lines.forEach(line => {
+    const cleanLine = line.trim();
+    if (!cleanLine) return;
+
+    const parts = cleanLine.split(/[\t,，\s]+/).filter(Boolean);
+
+    let id = "";
+    let name = "";
+    let dept = "";
+
+    if (parts.length === 1) {
+      name = parts[0];
+      id = "S" + String(autoIndex).padStart(4, '0');
+    } else if (parts.length === 2) {
+      if (/^[A-Za-z0-9]+$/.test(parts[0])) {
+        id = parts[0];
+        name = parts[1];
+      } else {
+        name = parts[0];
+        dept = parts[1];
+        id = "S" + String(autoIndex).padStart(4, '0');
+      }
+    } else if (parts.length >= 3) {
+      if (/^[A-Za-z0-9]+$/.test(parts[0])) {
+        id = parts[0];
+        name = parts[1];
+        dept = parts[2];
+      } else {
+        name = parts[0];
+        id = parts[1];
+        dept = parts[2];
+      }
+    }
+
+    parsedStudents.push({
+      id: id,
+      name: name,
+      dept: dept,
+      groupId: null,
+      isLeader: false,
+      roleNote: ""
+    });
+    autoIndex++;
+  });
+
+  if (parsedStudents.length === 0) {
+    alert("無法識別名單內容，請確認格式！");
+    return;
+  }
+
+  if (appData.students.length > 0) {
+    if (confirm("目前已有 " + appData.students.length + " 位學生名單。\n點選「確定」將【覆蓋取代】，點選「取消」將【追加合併】。")) {
+      appData.students = parsedStudents;
+    } else {
+      parsedStudents.forEach(p => {
+        if (!appData.students.some(s => s.id === p.id && s.name === p.name)) {
+          appData.students.push(p);
+        }
+      });
+    }
+  } else {
+    appData.students = parsedStudents;
+  }
+
+  saveData(true);
+  renderAll();
+  closeModal("modal-import");
+  playChimeSound(659.25);
+  alert("✅ 成功匯入 " + parsedStudents.length + " 位學生並同步至雲端！");
+}
+
+function handleFileImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    document.getElementById("import-text").value = event.target.result;
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+// --- Export Generator (LINE Text & CSV) ---
+function generateExportPreview() {
+  let text = "📢【逢甲大學 115-1 通識《水水臺灣》期末專題分組與路演名冊】\n";
+  text += "📅 基準版凍結：2026/12/13(日) 23:59\n";
+  text += "════════════════════════════════════\n\n";
+
+  text += "🎯【期末路演現場發表順序】\n";
+  text += "------------------------------------\n";
+  text += "🌟【第 15 週報告組別（2026/12/16 課堂）】\n";
+  for (let order = 1; order <= 5; order++) {
+    const group = appData.groups.find(g => g.drawOrder === order);
+    if (group) {
+      const members = appData.students.filter(s => s.groupId === group.id);
+      const leader = members.find(m => m.isLeader);
+      const topicStr = group.topic ? group.topic : "(待小組自主決定)";
+      text += "  • 序號 " + order + "：原第 " + group.id + " 組《" + group.name + "》\n";
+      text += "    題目：" + topicStr + " [" + group.mvpType + "類]\n";
+      text += "    組長：" + (leader ? leader.name : '未定') + "｜人數：" + members.length + " 人\n";
+    } else {
+      text += "  • 序號 " + order + "：(尚未抽籤)\n";
+    }
+  }
+
+  text += "\n🔥【第 16 週報告組別（2026/12/23 課堂 ‧ 須揭露迭代對照表）】\n";
+  for (let order = 6; order <= 10; order++) {
+    const group = appData.groups.find(g => g.drawOrder === order);
+    if (group) {
+      const members = appData.students.filter(s => s.groupId === group.id);
+      const leader = members.find(m => m.isLeader);
+      const topicStr = group.topic ? group.topic : "(待小組自主決定)";
+      text += "  • 序號 " + order + "：原第 " + group.id + " 組《" + group.name + "》\n";
+      text += "    題目：" + topicStr + " [" + group.mvpType + "類]\n";
+      text += "    組長：" + (leader ? leader.name : '未定') + "｜人數：" + members.length + " 人\n";
+    } else {
+      text += "  • 序號 " + order + "：(尚未抽籤)\n";
+    }
+  }
+
+  text += "\n════════════════════════════════════\n";
+  text += "📋【各組詳細成員名冊】\n";
+
+  appData.groups.forEach(g => {
+    const members = appData.students.filter(s => s.groupId === g.id);
+    const leader = members.find(m => m.isLeader);
+    const orderStr = g.drawOrder ? ("[路演序號 " + g.drawOrder + "]") : '[未抽籤]';
+    const topicStr = g.topic ? g.topic : "(待小組自主決定)";
+    text += "\n▶ 第 " + g.id + " 組《" + g.name + "》" + orderStr + "\n";
+    text += "  題目：" + topicStr + " (" + g.mvpType + " 類 MVP)\n";
+    text += "  組長：" + (leader ? leader.name + ' (' + leader.id + ')' : '未指定') + "\n";
+    text += "  全員名單 (" + members.length + " 人)：\n";
+    members.forEach((m, idx) => {
+      const leaderTag = m.isLeader ? ' (組長)' : '';
+      const roleStr = m.roleNote ? (" [" + m.roleNote + "]") : '';
+      text += "    " + (idx + 1) + ". " + m.name + " (" + m.id + " " + (m.dept || '') + ")" + leaderTag + roleStr + "\n";
+    });
+  });
+
+  const unassigned = appData.students.filter(s => s.groupId === null);
+  if (unassigned.length > 0) {
+    text += "\n⚠️【尚未完成組隊學生 (" + unassigned.length + " 人)】\n";
+    unassigned.forEach(u => {
+      text += "  • " + u.name + " (" + u.id + " " + (u.dept || '') + ")\n";
+    });
+  }
+
+  const previewEl = document.getElementById("export-preview-text");
+  if (previewEl) previewEl.value = text;
+}
+
+function copyLineAnnouncement() {
+  generateExportPreview();
+  const text = document.getElementById("export-preview-text").value;
+  navigator.clipboard.writeText(text).then(() => {
+    playChimeSound(783.99);
+    alert("📋 複製成功！您可以直接貼到 LINE 課程群組或校園 LMS 公告。");
+  }).catch(err => {
+    alert("複製失敗，請手動全選複製下方文字。");
+  });
+}
+
+function exportCsvFile() {
+  let csv = "\uFEFF";
+  csv += "組別,組名,專案題目,MVP類別,抽籤順序,報告週次,組員姓名,學號,系所,身分,自主任務\n";
+
+  appData.groups.forEach(g => {
+    const members = appData.students.filter(s => s.groupId === g.id);
+    const week = g.drawOrder ? (g.drawOrder <= 5 ? "第15週" : "第16週") : "未抽籤";
+    const order = g.drawOrder || "";
+    const topicStr = g.topic || "";
+
+    if (members.length === 0) {
+      csv += "第" + g.id + "組,\"" + g.name + "\",\"" + topicStr + "\"," + g.mvpType + "," + order + "," + week + ",,,,, \n";
+    } else {
+      members.forEach(m => {
+        const role = m.isLeader ? "組長" : "組員";
+        csv += "第" + g.id + "組,\"" + g.name + "\",\"" + topicStr + "\"," + g.mvpType + "," + order + "," + week + ",\"" + m.name + "\",\"" + m.id + "\",\"" + (m.dept || '') + "\",\"" + role + "\",\"" + (m.roleNote || '') + "\"\n";
+      });
+    }
+  });
+
+  const unassigned = appData.students.filter(s => s.groupId === null);
+  unassigned.forEach(u => {
+    csv += "未分組,\"\",\"\",\"\",\"\",\"\",\"" + u.name + "\",\"" + u.id + "\",\"" + (u.dept || '') + "\",\"待分配\",\"\"\n";
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "FCU_115-1_水水臺灣_期末專題分組與抽籤總表_" + new Date().toISOString().slice(0, 10) + ".csv";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function confirmResetAll() {
+  if (!confirm("⚠️ 警告：確定要清空所有學生名單、分組與抽籤記錄嗎？\n此動作將同步清空 Google 雲端伺服器與本機記錄。")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  appData = {
+    students: [],
+    groups: createInitialGroups(),
+    lotteryDone: false,
+    soundEnabled: true,
+    lastUpdated: new Date().toISOString()
+  };
+  saveData(true);
+  renderAll();
+  alert("系統與雲端已完全重設！");
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderAll() {
+  renderStudentPool();
+  renderGroups();
+  renderLotterySlots();
+  updateStats();
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  // 1. First render immediately from local storage (if any)
+  loadFromLocalStorage();
+  renderAll();
+
+  // 2. Then fetch latest truth from Google Cloud Firestore
+  fetchFromCloud(false);
+
+  // 3. Fast auto-poll cloud every 3 seconds for active classroom collaboration
+  autoPollInterval = setInterval(() => {
+    fetchFromCloud(false);
+  }, 3000);
+});
+  </script>
+</body>
+</html>
