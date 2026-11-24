@@ -3235,12 +3235,13 @@ function performStepByStepLottery() {
 }
 
 function resetLotteryOnly() {
-  if (!confirm("【確認僅清除抽籤順序】
+  const confirmMsg = `【確認僅清除抽籤順序】
 
 ✅ 全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！
 🔄 僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。
 
-確定要清空抽籤順序重新開始嗎？")) return;
+確定要清空抽籤順序重新開始嗎？`;
+  if (!confirm(confirmMsg)) return;
   appData.groups.forEach(g => {
     g.drawOrder = null;
   });
