@@ -972,6 +972,27 @@
       100% { transform: scale(1); opacity: 1; }
     }
 
+    /* Non-blocking Celebratory Announcement Banner */
+    .lottery-announcement-banner {
+      background: linear-gradient(135deg, rgba(8, 145, 178, 0.25) 0%, rgba(30, 58, 138, 0.35) 50%, rgba(217, 119, 6, 0.25) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: 0 4px 25px rgba(6, 182, 212, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      margin-top: 1.25rem;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.6;
+      animation: bannerPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes bannerPopIn {
+      0% { transform: translateY(-8px) scale(0.98); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
     .slot-order-badge {
       width: 44px;
       height: 44px;
@@ -1437,6 +1458,9 @@
             點擊「清空抽籤順序」僅重設報告席位，學生名單 100% 絕不清空！
           </div>
         </div>
+
+        <!-- Non-blocking Celebratory Announcement Banner -->
+        <div id="lottery-announcement-banner" class="lottery-announcement-banner" style="display: none;"></div>
       </div>
 
       <!-- Lottery Results Dual Column Showcase -->
@@ -2462,6 +2486,49 @@ D1234503 李冠廷 資工系
       return false;
     }
 
+    let isLocalSavePending = false;
+
+    function directCloudSave(successMsg) {
+      isLocalSavePending = true;
+      if (saveCloudTimeout) clearTimeout(saveCloudTimeout);
+
+      appData.lastUpdated = new Date().toISOString();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      } catch (e) {}
+      updateStats();
+
+      const payload = {
+        fields: {
+          payload: { stringValue: JSON.stringify(appData) },
+          updated_at: { stringValue: appData.lastUpdated },
+          student_count: { integerValue: String(appData.students.length) }
+        }
+      };
+
+      setCloudStatus("syncing", "正在儲存至雲端...");
+      return fetch(FIRESTORE_URL, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(data => {
+        isLocalSavePending = false;
+        const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+        setCloudStatus("synced", (successMsg || "雲端已同步") + " (" + timeStr + ")");
+        return data;
+      })
+      .catch(err => {
+        isLocalSavePending = false;
+        console.warn("Direct cloud save error, scheduling fallback:", err);
+        scheduleCloudSave();
+      });
+    }
+
     function saveData(triggerCloudSync) {
       appData.lastUpdated = new Date().toISOString();
       try {
@@ -2486,10 +2553,13 @@ D1234503 李冠廷 資工系
 
     // Concurrency-Safe Smart Merge: Reads latest cloud, merges student assignments by ID, then patches!
     function executeCloudSave() {
+      if (isLocalSavePending) return;
+
       // 1. First fetch latest cloud document to prevent race condition clobbering
       fetch(FIRESTORE_URL, { method: "GET" })
       .then(res => res.ok ? res.json() : null)
       .then(doc => {
+        if (isLocalSavePending) return;
         let mergedData = appData;
 
         if (doc && doc.fields && doc.fields.payload && doc.fields.payload.stringValue) {
@@ -2552,10 +2622,12 @@ D1234503 李冠廷 資工系
         });
       })
       .then(res => {
+        if (!res) return;
         if (!res.ok) throw new Error("HTTP " + res.status);
         return res.json();
       })
       .then(data => {
+        if (!data) return;
         const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
         setCloudStatus("synced", "雲端已同步 (" + timeStr + ")");
       })
@@ -2566,6 +2638,9 @@ D1234503 李冠廷 資工系
     }
 
     function fetchFromCloud(userManualClick) {
+      if (isLocalSavePending) {
+        return;
+      }
       if (userManualClick) setCloudStatus("syncing", "正在拉取雲端最新名單...");
 
       fetch(FIRESTORE_URL, { method: "GET" })
@@ -2574,9 +2649,27 @@ D1234503 李冠廷 資工系
         return res.json();
       })
       .then(doc => {
+        if (isLocalSavePending) return;
         if (doc && doc.fields && doc.fields.payload && doc.fields.payload.stringValue) {
           const cloudData = JSON.parse(doc.fields.payload.stringValue);
           if (cloudData && Array.isArray(cloudData.groups) && cloudData.groups.length === 10) {
+
+            // Strict anti-stale timestamp guard: Never let older cloud data overwrite newer local data!
+            if (appData.lastUpdated && cloudData.lastUpdated) {
+              const localTime = new Date(appData.lastUpdated).getTime();
+              const cloudTime = new Date(cloudData.lastUpdated).getTime();
+              if (cloudTime < localTime) {
+                console.log("Stale cloud data ignored (cloud: " + cloudData.lastUpdated + " < local: " + appData.lastUpdated + ")");
+                return;
+              }
+            }
+
+            // Anti-regression guard: If local lottery is done, do not let un-drawn cloud data wipe it out!
+            if (appData.lotteryDone && !cloudData.lotteryDone) {
+              console.log("Local lottery completed, ignoring un-drawn cloud data");
+              return;
+            }
+
             appData = cloudData;
             localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
             renderAll();
@@ -3176,34 +3269,53 @@ function clearGroupMembers(groupId) {
 }
 
 // --- STAGE 2: ROADSHOW LOTTERY LOGIC ---
+function showLotteryAnnouncement(html) {
+  const banner = document.getElementById("lottery-announcement-banner");
+  if (banner) {
+    banner.innerHTML = html;
+    banner.style.display = "block";
+  }
+}
+
+function hideLotteryBanner() {
+  const banner = document.getElementById("lottery-announcement-banner");
+  if (banner) {
+    banner.style.display = "none";
+    banner.innerHTML = "";
+  }
+}
+
 function performGrandLottery() {
   const btn = document.getElementById("btn-draw-all");
-  btn.disabled = true;
-  btn.innerText = "⏳ 抽籤進行中 (緊張運算)...";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = "🎉 抽籤完成！";
+  }
 
+  // 1. Instant deterministic shuffle
   const drawPool = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(() => Math.random() - 0.5);
 
-  let tickCount = 0;
-  const interval = setInterval(() => {
-    playTickSound();
-    tickCount++;
-    if (tickCount > 18) {
-      clearInterval(interval);
+  appData.groups.forEach((g, idx) => {
+    g.drawOrder = drawPool[idx];
+  });
+  appData.lotteryDone = true;
+  appData.lastUpdated = new Date().toISOString();
 
-      appData.groups.forEach((g, idx) => {
-        g.drawOrder = drawPool[idx];
-      });
-      appData.lotteryDone = true;
-      saveData(true);
+  // 2. Synchronous immediate render to DOM (First-click guaranteed visibility!)
+  renderLotterySlots();
+  updateStats();
+  playFanfareSound();
 
-      renderLotterySlots();
-      playFanfareSound();
+  // 3. Display celebratory announcement banner right in the UI (non-blocking)
+  showLotteryAnnouncement("🎉 10 組報告順序已全數抽籤完畢！<br><span style='color: #67e8f9;'>🌟 序號 1 ~ 5 組：第 15 週報告 (12/16 課堂基準成果)</span> ｜ <span style='color: #fde047;'>🔥 序號 6 ~ 10 組：第 16 週報告 (12/23 課堂附帶 V2.0 迭代對照表)</span>");
 
+  // 4. Direct atomic save to Google Cloud (bypasses slow debounce and GETs)
+  directCloudSave("抽籤席位已鎖定同步").finally(() => {
+    if (btn) {
       btn.disabled = false;
       btn.innerText = "🎲 震撼一鍵全組抽籤";
-      alert("🎉 報告順序抽籤完畢！\n\n🌟 序號 1 ~ 5 組：第 15 週報告\n🔥 序號 6 ~ 10 組：第 16 週報告 (附帶 V2.0 迭代對照表)");
     }
-  }, 80);
+  });
 }
 
 function performStepByStepLottery() {
@@ -3226,17 +3338,22 @@ function performStepByStepLottery() {
     appData.lotteryDone = true;
   }
 
-  saveData(true);
+  appData.lastUpdated = new Date().toISOString();
   renderLotterySlots();
+  updateStats();
   playChimeSound(drawnOrder <= 5 ? 587.33 : 440.00);
 
-  const weekText = drawnOrder <= 5 ? "第 15 週報告 (🌟 基準展示)" : "第 16 週報告 (🔥 附帶迭代對照表)";
-  alert("【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + targetGroup.name + "】\n抽中順序號碼：【 " + drawnOrder + " 號 】！\n分派安排：" + weekText);
+  const weekText = drawnOrder <= 5 ? "<strong style='color:#67e8f9;'>第 15 週報告 (🌟 基準展示)</strong>" : "<strong style='color:#fde047;'>第 16 週報告 (🔥 附帶迭代對照表)</strong>";
+  showLotteryAnnouncement("🎯【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + escapeHtml(targetGroup.name) + "】抽中順序號碼：【 <strong style='font-size:1.2rem; color:var(--gold);'>" + drawnOrder + " 號</strong> 】！分派安排：" + weekText);
+
+  directCloudSave("逐組抽籤席位已同步");
 }
 
 function resetLotteryOnly() {
   var msg = "【確認僅清空抽籤順序】\n\n全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！\n僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。\n\n確定要清空抽籤順序重新開始嗎？";
   if (!confirm(msg)) return;
+
+  hideLotteryBanner();
   appData.groups.forEach(function(g) {
     g.drawOrder = null;
   });
@@ -3249,27 +3366,7 @@ function resetLotteryOnly() {
   renderLotterySlots();
   playChimeSound(440.00);
 
-  var payload = {
-    fields: {
-      payload: {
-        stringValue: JSON.stringify(appData)
-      }
-    }
-  };
-  setCloudStatus("syncing", "正在重置雲端抽籤席位...");
-  fetch(FIRESTORE_URL, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-  .then(function(res) {
-    var timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
-    setCloudStatus("synced", "已重置抽籤席位 (" + timeStr + ")");
-  })
-  .catch(function(err) {
-    console.warn("Direct cloud reset failed, fallback to scheduleCloudSave:", err);
-    scheduleCloudSave();
-  });
+  directCloudSave("已清空抽籤順序 (名冊完整保全)");
 }
 
 function renderLotterySlots() {
@@ -3290,6 +3387,16 @@ function renderLotterySlots() {
     htmlW16 += renderSingleSlotCard(order, group);
   }
   listW16.innerHTML = htmlW16;
+
+  // Auto-maintain announcement banner visibility based on lottery state
+  if (appData.lotteryDone) {
+    showLotteryAnnouncement("🎉 10 組報告順序已全數抽籤完畢！<br><span style='color: #67e8f9;'>🌟 序號 1 ~ 5 組：第 15 週報告 (12/16 課堂基準成果)</span> ｜ <span style='color: #fde047;'>🔥 序號 6 ~ 10 組：第 16 週報告 (12/23 課堂附帶 V2.0 迭代對照表)</span>");
+  } else {
+    const drawnCount = appData.groups.filter(g => g.drawOrder !== null).length;
+    if (drawnCount === 0) {
+      hideLotteryBanner();
+    }
+  }
 }
 
 function renderSingleSlotCard(order, group) {
