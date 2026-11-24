@@ -2519,7 +2519,7 @@ D1234503 李冠廷 資工系
                   const cloudG = cloudData.groups.find(x => x.id === localG.id);
                   if (cloudG) {
                     if (!localG.topic && cloudG.topic) localG.topic = cloudG.topic;
-                    if (cloudG.drawOrder !== null && localG.drawOrder === null) localG.drawOrder = cloudG.drawOrder;
+                    // drawOrder is governed by local state; do not revive if reset
                   }
                 });
               }
@@ -3228,11 +3228,42 @@ function performStepByStepLottery() {
 }
 
 function resetLotteryOnly() {
-  if (!confirm("確定要清除現有的抽籤報告順序嗎？（各組學生名單將完整保留）")) return;
-  appData.groups.forEach(g => g.drawOrder = null);
+  if (!confirm("確定要清除現有的抽籤報告順序，回到空白初始狀態嗎？
+（各組學生名單將 100% 完整保留）")) return;
+  appData.groups.forEach(g => {
+    g.drawOrder = null;
+  });
   appData.lotteryDone = false;
-  saveData(true);
+  appData.lastUpdated = new Date().toISOString();
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  } catch (e) {}
+  updateStats();
   renderLotterySlots();
+  playChimeSound(440.00);
+
+  // Directly force-push clean un-drawn state to Firestore without merge conflict
+  const payload = {
+    fields: {
+      payload: {
+        stringValue: JSON.stringify(appData)
+      }
+    }
+  };
+  setCloudStatus("syncing", "正在重置雲端抽籤席位...");
+  fetch(FIRESTORE_URL, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(res => {
+    const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+    setCloudStatus("synced", "已重置抽籤席位 (" + timeStr + ")");
+  })
+  .catch(err => {
+    console.warn("Direct cloud reset failed, fallback to scheduleCloudSave:", err);
+    scheduleCloudSave();
+  });
 }
 
 function renderLotterySlots() {
