@@ -3231,18 +3231,13 @@ function performStepByStepLottery() {
   playChimeSound(drawnOrder <= 5 ? 587.33 : 440.00);
 
   const weekText = drawnOrder <= 5 ? "第 15 週報告 (🌟 基準展示)" : "第 16 週報告 (🔥 附帶迭代對照表)";
-  alert("🎯【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + targetGroup.name + "】\n抽中順序號碼：【 " + drawnOrder + " 號 】！\n分派安排：" + weekText);
+  alert("【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + targetGroup.name + "】\n抽中順序號碼：【 " + drawnOrder + " 號 】！\n分派安排：" + weekText);
 }
 
 function resetLotteryOnly() {
-  const confirmMsg = `【確認僅清除抽籤順序】
-
-✅ 全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！
-🔄 僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。
-
-確定要清空抽籤順序重新開始嗎？`;
-  if (!confirm(confirmMsg)) return;
-  appData.groups.forEach(g => {
+  var msg = "【確認僅清空抽籤順序】\n\n全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！\n僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。\n\n確定要清空抽籤順序重新開始嗎？";
+  if (!confirm(msg)) return;
+  appData.groups.forEach(function(g) {
     g.drawOrder = null;
   });
   appData.lotteryDone = false;
@@ -3254,8 +3249,7 @@ function resetLotteryOnly() {
   renderLotterySlots();
   playChimeSound(440.00);
 
-  // Directly force-push clean un-drawn state to Firestore without merge conflict
-  const payload = {
+  var payload = {
     fields: {
       payload: {
         stringValue: JSON.stringify(appData)
@@ -3268,11 +3262,11 @@ function resetLotteryOnly() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
-  .then(res => {
-    const timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
+  .then(function(res) {
+    var timeStr = new Date().toLocaleTimeString("zh-TW", { hour12: false });
     setCloudStatus("synced", "已重置抽籤席位 (" + timeStr + ")");
   })
-  .catch(err => {
+  .catch(function(err) {
     console.warn("Direct cloud reset failed, fallback to scheduleCloudSave:", err);
     scheduleCloudSave();
   });
