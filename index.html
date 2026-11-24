@@ -1287,9 +1287,7 @@
         <button class="btn btn-gold" onclick="openExportModal()">
           📤 匯出 / 複製公告
         </button>
-        <button class="btn btn-danger btn-sm" onclick="confirmResetAll()">
-          🔄 重設清空
-        </button>
+        <span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.82rem; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;">🔒 70人名冊已鎖定</span>
       </div>
     </div>
   </header>
@@ -1426,9 +1424,18 @@
           <button class="sound-toggle-btn active" id="btn-sound-toggle" onclick="toggleSound()">
             🔊 課堂現場音效：開
           </button>
-          <button class="btn btn-outline" style="padding: 0.85rem 1rem;" onclick="resetLotteryOnly()">
-            🔄 重新抽籤
+          <button class="btn btn-outline" style="padding: 0.85rem 1.1rem; border-color: var(--gold); color: var(--gold);" onclick="resetLotteryOnly()">
+            🔄 僅清空抽籤順序 (名冊完整保全)
           </button>
+        </div>
+      
+        <div id="roster-safety-banner" style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 10px 16px; margin-top: 14px; font-size: 0.85rem; color: var(--text-dim); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div>
+            🛡️ <strong style="color: #38bdf8;">學生名冊安全防護保證：</strong>全班 10 組 70 位學生名單已<strong>永久鎖定</strong>（組長：黃文懋、姚竑均、張博硯、江翊晨、翁鈺璿、呂詰凱、劉承紘、張育涵、盧思妍、黃翌）。
+          </div>
+          <div style="color: var(--gold); font-weight: 500;">
+            點擊「清空抽籤順序」僅重設報告席位，學生名單 100% 絕不清空！
+          </div>
         </div>
       </div>
 
@@ -3228,8 +3235,12 @@ function performStepByStepLottery() {
 }
 
 function resetLotteryOnly() {
-  if (!confirm("確定要清除現有的抽籤報告順序，回到空白初始狀態嗎？
-（各組學生名單將 100% 完整保留）")) return;
+  if (!confirm("【確認僅清除抽籤順序】
+
+✅ 全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！
+🔄 僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。
+
+確定要清空抽籤順序重新開始嗎？")) return;
   appData.groups.forEach(g => {
     g.drawOrder = null;
   });
