@@ -967,6 +967,35 @@
       animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
+    .slot-card.shuffling {
+      border: 1px dashed rgba(245, 158, 11, 0.7) !important;
+      background: rgba(245, 158, 11, 0.08) !important;
+      animation: slotPulse 0.35s infinite alternate ease-in-out;
+    }
+
+    @keyframes slotPulse {
+      0% { transform: scale(0.99); box-shadow: 0 0 6px rgba(245, 158, 11, 0.2); }
+      100% { transform: scale(1.01); box-shadow: 0 0 16px rgba(245, 158, 11, 0.5); }
+    }
+
+    .slot-card.locked-w15 {
+      animation: lockW15 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes lockW15 {
+      0% { transform: scale(0.92); box-shadow: 0 0 25px rgba(6, 182, 212, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2); }
+    }
+
+    .slot-card.locked-w16 {
+      animation: lockW16 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes lockW16 {
+      0% { transform: scale(0.92); box-shadow: 0 0 25px rgba(245, 158, 11, 0.8); }
+      100% { transform: scale(1); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); }
+    }
+
     @keyframes popIn {
       0% { transform: scale(0.9); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
@@ -986,6 +1015,23 @@
       text-align: center;
       line-height: 1.6;
       animation: bannerPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .lottery-suspense-box {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fef08a;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      animation: suspensePulse 0.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes suspensePulse {
+      0% { opacity: 0.85; transform: scale(0.99); }
+      100% { opacity: 1; transform: scale(1.02); }
     }
 
     @keyframes bannerPopIn {
@@ -1410,26 +1456,30 @@
       <!-- Lottery Hero Banner -->
       <div class="lottery-hero">
         <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 0.5rem; letter-spacing: -0.02em;">
-          🎯 期末路演報告順序 ‧ 公平透明抽籤大會
+          🎯 期末路演報告順序 ‧ 命運懸疑抽籤大會
         </h2>
-        <p style="color: var(--text-muted); max-width: 750px; margin: 0 auto 1.5rem; font-size: 0.95rem;">
-          總共 10 組自主認領團隊，由系統進行無偏盲抽，結果自動存入 Google 雲端資料庫：
+        <p style="color: var(--text-muted); max-width: 800px; margin: 0 auto 1.5rem; font-size: 0.95rem; line-height: 1.6;">
+          ⚡ 命運輪盤即刻啟動！全班 10 大自主團隊，誰能奪得第 15 週黃金先行席位？誰又將落入第 16 週深度迭代的試煉修羅場？由系統進行無偏盲抽，結果自動存入 Google 雲端資料庫：
         </p>
 
         <!-- Rule Badges -->
         <div class="lottery-rules-banner">
           <div class="rule-tag w15">
-            <span style="font-size: 1.2rem;">🌟</span>
+            <span style="font-size: 1.3rem;">🌟</span>
             <div>
-              <strong>第 1 到第 5 組</strong>
-              <div style="font-size: 0.8rem; opacity: 0.85;">第 15 週現場路演 (2026/12/16 課堂)</div>
+              <strong>第 1 到第 5 組【先行探路 ‧ 黃金基準席】</strong>
+              <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 2px;">
+                2026/12/16 搶先登台！基準成果一戰定江山，發表完畢即刻解脫，享受期末勝利時光！
+              </div>
             </div>
           </div>
           <div class="rule-tag w16">
-            <span style="font-size: 1.2rem;">🔥</span>
+            <span style="font-size: 1.3rem;">🔥</span>
             <div>
-              <strong>第 6 到第 10 組</strong>
-              <div style="font-size: 0.8rem; opacity: 0.85;">第 16 週現場路演 (需附帶 V2.0 迭代對照表)</div>
+              <strong>第 6 到第 10 組【背水一戰 ‧ 殘酷迭代組】</strong>
+              <div style="font-size: 0.8rem; opacity: 0.9; margin-top: 2px;">
+                2026/12/23 壓軸登場！多給一週絕非休閒，成果包必須強制揭露「V2.0 迭代演進對照表」，直球對決！
+              </div>
             </div>
           </div>
         </div>
@@ -1476,7 +1526,7 @@
             <div class="week-date-pill">2026/12/16 課堂現場</div>
           </div>
           <div class="week-notice-box">
-            📌 <strong>路演守則</strong>：W14 週日 (12/13) 23:59 全班基準版凍結，第 15 週依序上台進行 10 分鐘解說 ＋ 3 分鐘評審提問。
+            📌 <strong>先行者守則</strong>：W14 週日 (12/13) 23:59 全班基準版凍結，第 15 週搶先上台進行 10 分鐘解說 ＋ 3 分鐘評審提問，率先完賽解脫！
           </div>
           <div class="slot-cards-list" id="slots-list-w15">
             <!-- Slots 1 to 5 injected here -->
@@ -1493,7 +1543,7 @@
             <div class="week-date-pill">2026/12/23 課堂現場</div>
           </div>
           <div class="week-notice-box">
-            ⚠️ <strong>迭代守則</strong>：基準成果已於 W14 凍結！後發組必須於成果包揭露「V2.0 迭代演進對照表」，不因多一週而自動加分。
+            ⚠️ <strong>進化者考驗</strong>：基準成果已於 W14 凍結！多一週絕不自動加分，後發組必須於成果包揭露「V2.0 迭代演進對照表」，直球殘酷對決！
           </div>
           <div class="slot-cards-list" id="slots-list-w16">
             <!-- Slots 6 to 10 injected here -->
@@ -2487,6 +2537,7 @@ D1234503 李冠廷 資工系
     }
 
     let isLocalSavePending = false;
+    let isLotteryRolling = false;
 
     function directCloudSave(successMsg) {
       isLocalSavePending = true;
@@ -2638,7 +2689,7 @@ D1234503 李冠廷 資工系
     }
 
     function fetchFromCloud(userManualClick) {
-      if (isLocalSavePending) {
+      if (isLocalSavePending || isLotteryRolling) {
         return;
       }
       if (userManualClick) setCloudStatus("syncing", "正在拉取雲端最新名單...");
@@ -2649,7 +2700,7 @@ D1234503 李冠廷 資工系
         return res.json();
       })
       .then(doc => {
-        if (isLocalSavePending) return;
+        if (isLocalSavePending || isLotteryRolling) return;
         if (doc && doc.fields && doc.fields.payload && doc.fields.payload.stringValue) {
           const cloudData = JSON.parse(doc.fields.payload.stringValue);
           if (cloudData && Array.isArray(cloudData.groups) && cloudData.groups.length === 10) {
@@ -3285,40 +3336,160 @@ function hideLotteryBanner() {
   }
 }
 
+function renderShufflingSlotCard(order, dummyName) {
+  return `
+    <div class="slot-card shuffling">
+      <div class="slot-order-badge">${order}</div>
+      <div class="slot-body">
+        <div class="slot-top-row">
+          <span class="slot-team-tag" style="color:#fde047; border-color:rgba(245,158,11,0.6);">🎲 命運滾輪中</span>
+          <span class="slot-team-name" style="color:#fde047; opacity:0.95;">${escapeHtml(dummyName)}</span>
+        </div>
+        <div class="slot-topic-row" style="color:var(--text-dim); font-size:0.8rem;">
+          ⚡ 緊張運算中... 席位即將鎖定
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function performGrandLottery() {
+  if (isLotteryRolling) return;
   const btn = document.getElementById("btn-draw-all");
+  isLotteryRolling = true;
+  isLocalSavePending = true; // Lock cloud sync immediately!
+
   if (btn) {
     btn.disabled = true;
-    btn.innerText = "🎉 抽籤完成！";
+    btn.innerText = "⚡ 命運輪盤瘋狂旋轉中...";
+    btn.style.boxShadow = "0 0 25px rgba(245, 158, 11, 0.8)";
   }
 
-  // 1. Instant deterministic shuffle
+  // Pre-calculate deterministic random assignment
   const drawPool = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort(() => Math.random() - 0.5);
+  const groupNames = appData.groups.map(g => "原 第 " + (g.id < 10 ? '0' + g.id : g.id) + " 組 " + g.name);
 
-  appData.groups.forEach((g, idx) => {
-    g.drawOrder = drawPool[idx];
-  });
-  appData.lotteryDone = true;
-  appData.lastUpdated = new Date().toISOString();
+  // Clear current draw orders in appData for progressive build-up
+  appData.groups.forEach(g => { g.drawOrder = null; });
+  appData.lotteryDone = false;
 
-  // 2. Synchronous immediate render to DOM (First-click guaranteed visibility!)
-  renderLotterySlots();
-  updateStats();
-  playFanfareSound();
+  const listW15 = document.getElementById("slots-list-w15");
+  const listW16 = document.getElementById("slots-list-w16");
 
-  // 3. Display celebratory announcement banner right in the UI (non-blocking)
-  showLotteryAnnouncement("🎉 10 組報告順序已全數抽籤完畢！<br><span style='color: #67e8f9;'>🌟 序號 1 ~ 5 組：第 15 週報告 (12/16 課堂基準成果)</span> ｜ <span style='color: #fde047;'>🔥 序號 6 ~ 10 組：第 16 週報告 (12/23 課堂附帶 V2.0 迭代對照表)</span>");
+  // Stage 1: The Suspense Spin (1.2 seconds, 12 rapid ticks)
+  let spinTicks = 0;
+  showLotteryAnnouncement(`
+    <div class="lottery-suspense-box">
+      <span style="font-size: 1.5rem;">🔮</span>
+      <span>命運齒輪高速旋轉中... 誰將搶下第 15 週率先登場席位？心跳加速中！</span>
+    </div>
+  `);
 
-  // 4. Direct atomic save to Google Cloud (bypasses slow debounce and GETs)
-  directCloudSave("抽籤席位已鎖定同步").finally(() => {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerText = "🎲 震撼一鍵全組抽籤";
+  const spinInterval = setInterval(() => {
+    playTickSound();
+    spinTicks++;
+
+    // Rapidly randomize slot displays
+    let shuffleW15 = "";
+    for (let o = 1; o <= 5; o++) {
+      const randName = groupNames[(spinTicks + o) % groupNames.length];
+      shuffleW15 += renderShufflingSlotCard(o, randName);
     }
-  });
+    if (listW15) listW15.innerHTML = shuffleW15;
+
+    let shuffleW16 = "";
+    for (let o = 6; o <= 10; o++) {
+      const randName = groupNames[(spinTicks + o * 2) % groupNames.length];
+      shuffleW16 += renderShufflingSlotCard(o, randName);
+    }
+    if (listW16) listW16.innerHTML = shuffleW16;
+
+    if (spinTicks >= 12) {
+      clearInterval(spinInterval);
+      revealWeek15Step();
+    }
+  }, 90);
+
+  // Stage 2: Staggered reveal of Week 15 (Slots 1 to 5)
+  function revealWeek15Step() {
+    showLotteryAnnouncement(`
+      <div class="lottery-suspense-box" style="color: #67e8f9;">
+        <span style="font-size: 1.5rem;">🌟</span>
+        <span>【第 15 週先行席位 ‧ 逐一鎖定中】屏息以待...</span>
+      </div>
+    `);
+
+    let currentOrder = 1;
+    const w15Interval = setInterval(() => {
+      const groupIdx = drawPool.indexOf(currentOrder);
+      if (groupIdx !== -1) {
+        appData.groups[groupIdx].drawOrder = currentOrder;
+      }
+      renderLotterySlots();
+      playChimeSound(440 + currentOrder * 60);
+
+      currentOrder++;
+      if (currentOrder > 5) {
+        clearInterval(w15Interval);
+        setTimeout(revealWeek16Step, 700);
+      }
+    }, 280);
+  }
+
+  // Stage 3: Staggered reveal of Week 16 (Slots 6 to 10)
+  function revealWeek16Step() {
+    showLotteryAnnouncement(`
+      <div class="lottery-suspense-box" style="color: #fde047;">
+        <span style="font-size: 1.5rem;">🔥</span>
+        <span>第 15 週席位滿額！【第 16 週 ‧ 殘酷迭代挑戰組】即將揭曉...</span>
+      </div>
+    `);
+
+    let currentOrder = 6;
+    const w16Interval = setInterval(() => {
+      const groupIdx = drawPool.indexOf(currentOrder);
+      if (groupIdx !== -1) {
+        appData.groups[groupIdx].drawOrder = currentOrder;
+      }
+      renderLotterySlots();
+      playChimeSound(350 + (currentOrder - 5) * 60);
+
+      currentOrder++;
+      if (currentOrder > 10) {
+        clearInterval(w16Interval);
+        finishLottery();
+      }
+    }, 280);
+  }
+
+  // Stage 4: Climax Celebration
+  function finishLottery() {
+    appData.lotteryDone = true;
+    appData.lastUpdated = new Date().toISOString();
+    isLotteryRolling = false;
+
+    renderLotterySlots();
+    updateStats();
+    playFanfareSound();
+
+    showLotteryAnnouncement(`
+      🎉 <strong>【命運底牌全數揭曉 ‧ 全員就位】</strong><br>
+      <span style='color: #67e8f9;'>🌟 序號 1 ~ 5 組：第 15 週先行發表 (12/16 基準展演 ‧ 率先完賽)</span> ｜ 
+      <span style='color: #fde047;'>🔥 序號 6 ~ 10 組：第 16 週背水一戰 (12/23 壓軸登場 ‧ 揭露 V2.0 迭代對照表)</span>
+    `);
+
+    directCloudSave("抽籤席位已全數鎖定同步").finally(() => {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerText = "🎲 震撼一鍵全組抽籤";
+        btn.style.boxShadow = "";
+      }
+    });
+  }
 }
 
 function performStepByStepLottery() {
+  if (isLotteryRolling) return;
   const unassignedGroups = appData.groups.filter(g => g.drawOrder === null);
   if (unassignedGroups.length === 0) {
     if (confirm("10 組皆已完成抽籤！是否要重置順序重新逐組抽籤？")) {
@@ -3331,25 +3502,48 @@ function performStepByStepLottery() {
   const availableOrders = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(n => !usedOrders.has(n));
   const targetGroup = unassignedGroups[0];
 
-  const drawnOrder = availableOrders[Math.floor(Math.random() * availableOrders.length)];
-  targetGroup.drawOrder = drawnOrder;
+  isLotteryRolling = true;
+  isLocalSavePending = true;
 
-  if (availableOrders.length === 1) {
-    appData.lotteryDone = true;
-  }
+  // Suspense rolling for 800ms
+  let rollCount = 0;
+  const rollInterval = setInterval(() => {
+    playTickSound();
+    rollCount++;
+    const fakeOrder = availableOrders[Math.floor(Math.random() * availableOrders.length)];
+    showLotteryAnnouncement(`
+      <div class="lottery-suspense-box">
+        <span>🎲 正在為【第 ${targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id} 組：${escapeHtml(targetGroup.name)}】搖出命運球...</span>
+        <strong style="font-size: 1.5rem; color: #fde047;">${fakeOrder} 號？</strong>
+      </div>
+    `);
 
-  appData.lastUpdated = new Date().toISOString();
-  renderLotterySlots();
-  updateStats();
-  playChimeSound(drawnOrder <= 5 ? 587.33 : 440.00);
+    if (rollCount >= 8) {
+      clearInterval(rollInterval);
 
-  const weekText = drawnOrder <= 5 ? "<strong style='color:#67e8f9;'>第 15 週報告 (🌟 基準展示)</strong>" : "<strong style='color:#fde047;'>第 16 週報告 (🔥 附帶迭代對照表)</strong>";
-  showLotteryAnnouncement("🎯【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + escapeHtml(targetGroup.name) + "】抽中順序號碼：【 <strong style='font-size:1.2rem; color:var(--gold);'>" + drawnOrder + " 號</strong> 】！分派安排：" + weekText);
+      const drawnOrder = availableOrders[Math.floor(Math.random() * availableOrders.length)];
+      targetGroup.drawOrder = drawnOrder;
 
-  directCloudSave("逐組抽籤席位已同步");
+      if (availableOrders.length === 1) {
+        appData.lotteryDone = true;
+      }
+
+      appData.lastUpdated = new Date().toISOString();
+      isLotteryRolling = false;
+      renderLotterySlots();
+      updateStats();
+      playChimeSound(drawnOrder <= 5 ? 659.25 : 440.00);
+
+      const weekText = drawnOrder <= 5 ? "<strong style='color:#67e8f9;'>第 15 週報告 (🌟 基準展示)</strong>" : "<strong style='color:#fde047;'>第 16 週報告 (🔥 附帶迭代對照表)</strong>";
+      showLotteryAnnouncement("🎯【第 " + (targetGroup.id < 10 ? '0' + targetGroup.id : targetGroup.id) + " 組：" + escapeHtml(targetGroup.name) + "】命運揭曉！抽中順序號碼：【 <strong style='font-size:1.3rem; color:var(--gold);'>" + drawnOrder + " 號</strong> 】！分派安排：" + weekText);
+
+      directCloudSave("逐組抽籤席位已同步");
+    }
+  }, 100);
 }
 
 function resetLotteryOnly() {
+  if (isLotteryRolling) return;
   var msg = "【確認僅清空抽籤順序】\n\n全班 10 組 70 位學生的姓名、學號與分組名冊將 100% 完整保留！\n僅將「報告序號 1~10（第 15 週／第 16 週）」重新清空為待抽籤狀態。\n\n確定要清空抽籤順序重新開始嗎？";
   if (!confirm(msg)) return;
 
@@ -3393,7 +3587,7 @@ function renderLotterySlots() {
     showLotteryAnnouncement("🎉 10 組報告順序已全數抽籤完畢！<br><span style='color: #67e8f9;'>🌟 序號 1 ~ 5 組：第 15 週報告 (12/16 課堂基準成果)</span> ｜ <span style='color: #fde047;'>🔥 序號 6 ~ 10 組：第 16 週報告 (12/23 課堂附帶 V2.0 迭代對照表)</span>");
   } else {
     const drawnCount = appData.groups.filter(g => g.drawOrder !== null).length;
-    if (drawnCount === 0) {
+    if (drawnCount === 0 && !isLotteryRolling) {
       hideLotteryBanner();
     }
   }
@@ -3415,9 +3609,10 @@ function renderSingleSlotCard(order, group) {
   const leader = members.find(m => m.isLeader);
   const leaderName = leader ? leader.name : (members[0] ? members[0].name + " (暫代)" : "尚未指定");
   const topicText = group.topic ? ("🎯 " + escapeHtml(group.topic)) : "🎯 (待小組自主決定題目)";
+  const lockClass = order <= 5 ? "locked-w15" : "locked-w16";
 
   return `
-    <div class="slot-card revealed">
+    <div class="slot-card revealed ${lockClass}">
       <div class="slot-order-badge">${order}</div>
       <div class="slot-body">
         <div class="slot-top-row">
